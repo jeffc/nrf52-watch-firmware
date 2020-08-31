@@ -1,3 +1,5 @@
+#ifdef EMBEDDED
+
 #include "Arduino.h"
 #include <Wire.h>
  
@@ -67,3 +69,4 @@ void i2cterm_loop()
   while (Serial.available()) { Serial.read(); }
 }
 
+#endif

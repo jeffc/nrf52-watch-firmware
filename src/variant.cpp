@@ -20,6 +20,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef EMBEDDED
+
 #include "variant.h"
 #include "wiring_constants.h"
 #include "wiring_digital.h"
@@ -108,3 +110,4 @@ void initVariant()
   ledOff(PIN_LED2);
 }
 
+#endif

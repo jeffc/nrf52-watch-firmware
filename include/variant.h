@@ -18,6 +18,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef EMBEDDED
+
 #ifndef _VARIANT_WATCH_
 #define _VARIANT_WATCH_
 
@@ -137,4 +139,5 @@ static const uint8_t SCK  = PIN_SPI_SCK ;
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
 
+#endif
 #endif

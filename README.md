@@ -47,20 +47,10 @@ building a smartwatch based on the nrf52840 microcontroller from Nordic.
   * Once I have a design that I like, I'll send the files to
     [Shapeways](http://shapeways.com) or [ExOne](http://exone.com) to be 3D
     Printed in steel.
-  * Side buttons (required since the display is not a touch screen) will be on
-    separate PCBs, connected via JST-SH cables to the main PCB. This allows me
-    to use normal PCB buttons rather than right-angle ones, and gives some
-    flexibility in mounting the main PCB.
 
 ## Software
 
-  Since there isn't code written yet, this section is largely my notepad on
-  ideas and framework setup.
-
   * To conserve power, everything will be interrupts-driven. 
-  * PlatformIO doesn't have a builtin for the sparkfun dev board I'm using, so
-    the packages/ directory and corresponding lines in platformio.ini are a
-    workaround to keep the repository as portable as possible
   * A decent amount of build hackery was needed to make the native version build
     with the dummy adafruit_gfx library
 
@@ -71,7 +61,6 @@ building a smartwatch based on the nrf52840 microcontroller from Nordic.
     * [Adafruit](https://github.com/adafruit/Adafruit-GFX-Library)
     * [vhervieux on github](https://github.com/croutor/Adafruit_GFX_dummy_display)
     * [jeraymond on github](https://github.com/jeraymond/pio-sparkfun_pro_nrf52840_mini-setup)
-    * [UF2Conv from Microsoft](https://raw.githubusercontent.com/microsoft/uf2/master/utils/uf2conv.py)
   * This project took inspiration from these projects:
     * [Chronio](https://hackaday.io/project/12876-chronio)
     * [Samson March's Smartwatch](https://imgur.com/a/FSBwD3g)

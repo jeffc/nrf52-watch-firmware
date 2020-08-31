@@ -1,0 +1,3 @@
+.pio
+*.sw*
+*__pycache__*

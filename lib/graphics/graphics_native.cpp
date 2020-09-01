@@ -6,7 +6,7 @@ Graphics::Graphics() : Adafruit_GFX_dummy_display(SCREEN_WIDTH, SCREEN_HEIGHT, 3
 }
 
 void Graphics::clearBuffer() {
-  fillScreen(0);
+  fillScreen(1);
 }
 
 #endif

@@ -16,10 +16,10 @@ class Graphics : public Adafruit_GFX_dummy_display {
   public:
     // stub out methods that exist in Adafruit_Sharpmem but not native
     void clearBuffer();
-    void refresh() {};
+    void refresh() {display();};
 
 #elif EMBEDDED
-#include <Adafruit_SharpMem.h>
+#include <adafruit_sharpmem.h>
 
 class Graphics : public Adafruit_SharpMem {
 

@@ -7,7 +7,7 @@
 #include "graphics.h"
 #include "system.h"
 
-#include <Fonts/FreeMonoBold24pt7b.h>
+//#include <Fonts/FreeMonoBold24pt7b.h>
 #include "stdio.h"
 
 Graphics gfx = Graphics();
@@ -17,7 +17,7 @@ void setup() {
   rtc_init();
 
   gfx.clearDisplay();
-  gfx.setFont(&FreeMonoBold24pt7b);
+  //gfx.setFont(&FreeMonoBold24pt7b);
 
   //nrfx_spi_uninit();
 
@@ -38,5 +38,7 @@ void loop() {
 
 
   gfx.refresh();
-	//delay(500);
+#ifdef EMBEDDED
+	delay(500);
+#endif
 }

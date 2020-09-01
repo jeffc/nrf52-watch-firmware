@@ -15,8 +15,9 @@ Written by Limor Fried/Ladyada  for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
+#ifdef EMBEDDED
 
-#include "Adafruit_SharpMem.h"
+#include "adafruit_sharpmem.h"
 
 #ifndef _swap_int16_t
 #define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
@@ -344,3 +345,4 @@ void Adafruit_SharpMem::refresh(void)
   sendbyteLSB(0x00);
   digitalWrite(_ss, LOW);
 }
+#endif

@@ -16,6 +16,8 @@ BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
 
+#ifdef EMBEDDED
+
 #if ARDUINO >= 100
  #include "Arduino.h"
 #else
@@ -71,3 +73,5 @@ class Adafruit_SharpMem : public Adafruit_GFX {
   void sendbyteLSB(uint8_t data);
   void sendNbitLSB(uint16_t data, uint8_t nbits);
 };
+
+#endif

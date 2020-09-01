@@ -8,6 +8,7 @@
 #include "system.h"
 
 #include <Fonts/FreeMonoBold24pt7b.h>
+#include "stdio.h"
 
 Graphics gfx = Graphics();
 
@@ -15,12 +16,8 @@ void setup() {
   init_peripherals();
   rtc_init();
 
-  gfx.begin();
-
   gfx.clearDisplay();
-  gfx.setRotation(2);
   gfx.setFont(&FreeMonoBold24pt7b);
-  gfx.refresh();
 
   //nrfx_spi_uninit();
 
@@ -34,9 +31,12 @@ void loop() {
   gfx.setCursor(30, 50);
   gfx.setTextColor(0);
 
-  gfx.printf("%02d%c%02d\n", now.hour, ((now.second % 2) ? ':' : ' '), now.minute);
+  char txt[8];
+  snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%02d%c%02d\n", now.hour, ((now.second % 2) ? ':' : ' '), now.minute);
+
+  gfx.print(txt);
 
 
   gfx.refresh();
-	delay(500);
+	//delay(500);
 }

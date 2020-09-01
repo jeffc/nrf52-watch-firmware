@@ -1,10 +1,10 @@
 #ifdef EMBEDDED
-#warning asdf
 
 #include "battery.h"
 #include <stdint.h>
 #include <Arduino.h>
 #include <Wire.h>
+#include <stdint.h>
 
 uint16_t i2c_read_register16(uint8_t addr, uint8_t reg) {
   Wire.beginTransmission(addr);
@@ -76,6 +76,13 @@ void battery_setup() {
   }
 
 }
+
+uint8_t get_battery_percent() {
+    uint16_t battery_pct = i2c_read_register16(0x36, 0x06);
+    uint8_t bpct_h = (battery_pct >> 8) & 0xFF;
+    return bpct_h;
+}
+
 
 
 #endif

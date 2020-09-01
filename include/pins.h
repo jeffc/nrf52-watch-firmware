@@ -1,3 +1,5 @@
+#ifdef EMBEDDED
+
 #ifndef _WATCH_PINS_H_
 #define _WATCH_PINS_H_
 
@@ -21,4 +23,5 @@
 #define PIN_CHG 33
 
 
+#endif
 #endif

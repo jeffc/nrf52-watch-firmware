@@ -22,6 +22,12 @@ void init_peripherals() {
 	Serial.begin(115200);
 	Wire.begin();
 
+  // set up watchdog
+  // 9830401 = 5 minutes ((val-1)/32768) seconds)
+  NRF_WDT->CONFIG         = 0x01;     // Configure WDT to run when CPU is asleep
+  NRF_WDT->CRV            = 9830401;  // Timeout set to 120 seconds, timeout[s] = (CRV-1)/32768
+  NRF_WDT->RREN           = 0x01;     // Enable the RR[0] reload register
+  NRF_WDT->TASKS_START    = 1;        // Start WDT
 
   // set up GPIOs
 

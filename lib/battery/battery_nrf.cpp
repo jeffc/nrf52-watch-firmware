@@ -34,7 +34,7 @@ void battery_setup() {
 
   if (status_reg & 0x02) { // power on reset (POR) bit is set
     // do setup
-    
+
     uint16_t fstat_reg = i2c_read_register16(0x36, 0x3D);
     if (fstat_reg & 1) { // DNR
       Serial.println("DNR flag set, skipping");
@@ -74,20 +74,31 @@ void battery_model_set() {
 }
 
 uint8_t get_battery_percent() {
-    uint16_t battery_pct = i2c_read_register16(0x36, 0x06);
-    uint8_t bpct_h = (battery_pct >> 8) & 0xFF;
-    return bpct_h;
+  uint16_t battery_pct = i2c_read_register16(0x36, 0x06);
+  uint8_t bpct_h = (battery_pct >> 8) & 0xFF;
+  return bpct_h;
 }
 
 int get_battery_voltage_mv() {
-    uint16_t reg = i2c_read_register16(0x36, 0x09);
-    return (reg * 1.25)/16;
+  uint16_t reg = i2c_read_register16(0x36, 0x09);
+  return (reg * 1.25)/16;
 }
 
 int get_battery_current_uA() {
-    int16_t reg = i2c_read_register16(0x36, 0x0B);
-    return (reg * 156.25);
+  int16_t reg = i2c_read_register16(0x36, 0x0B);
+  return (reg * 156.25);
 }
+
+int get_battery_TTE() {
+  uint64_t reg = i2c_read_register16(0x36, 0x11);
+  return (reg * 5.625);
+}
+
+int get_battery_TTF() {
+  int16_t reg = i2c_read_register16(0x36, 0x20);
+  return (reg * 5.625);
+}
+
 
 
 

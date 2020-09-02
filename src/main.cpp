@@ -7,8 +7,8 @@
 #include "graphics.h"
 #include "system.h"
 
-#include <Fonts/FreeMonoBold24pt7b.h>
-#include <Fonts/FreeMonoBold18pt7b.h>
+#include <fonts/Dustfine72pt7b.h>
+#include <Fonts/FreeMonoBold12pt7b.h>
 #include "stdio.h"
 
 Graphics gfx = Graphics();
@@ -31,27 +31,32 @@ void doit() {
 
   gfx.clearBuffer();
 
-  gfx.setCursor(30, 50);
   gfx.setTextColor(0);
 
-  char txt[9] = {'\0'};
-  snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%02d%c%02d\n", now.hour, ((now.second % 2) ? ':' : ' '), now.minute);
+  //char txt[9] = {'\0'};
+  //snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%02d%c%02d\n", now.hour, ((now.second % 2) ? ':' : ' '), now.minute);
 
-  gfx.setFont(&FreeMonoBold24pt7b);
-  gfx.print(txt);
+  gfx.setFont(&Dustfine72pt7b);
+  gfx.setCursor(65, 100);
+  gfx.print(now.hour);
+  if (now.second % 2) {
+    gfx.print(".");
+  }
+  gfx.setCursor(65, 200);
+  gfx.print(now.minute);
 
-  gfx.setFont(&FreeMonoBold18pt7b);
-  gfx.setCursor(30, 100);
+  gfx.setFont(&FreeMonoBold12pt7b);
+  gfx.setCursor(30, 230);
   gfx.print("b: ");
   gfx.print(get_battery_percent());
   gfx.print("%");
 
-  gfx.setCursor(30, 150);
+  gfx.setCursor(30, 250);
 
   gfx.print(get_battery_voltage_mv());
   gfx.print(" mV");
 
-  gfx.setCursor(30, 200);
+  gfx.setCursor(30, 270);
 
   if (digitalRead(PIN_CHG)) {
     gfx.print("not ");

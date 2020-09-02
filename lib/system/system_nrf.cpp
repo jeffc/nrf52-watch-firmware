@@ -8,6 +8,15 @@
 #include "system.h"
 #include "battery.h"
 
+// todo: move to backlight module
+void backlight_pin5() {
+  if (digitalRead(PIN_BUTTON5)) {
+    digitalWrite(PIN_BACKLIGHT, LOW);
+  } else {
+    digitalWrite(PIN_BACKLIGHT, HIGH);
+  }
+}
+
 void init_peripherals() {
   // set up core system
 	Serial.begin(115200);
@@ -37,8 +46,8 @@ void init_peripherals() {
 
   attachInterrupt(PIN_BUTTON1, enter_dfu, CHANGE);
 
-  attachInterrupt(PIN_BUTTON3, battery_model_set, FALLING);
-
+  attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
+  attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
 }
 
 #endif

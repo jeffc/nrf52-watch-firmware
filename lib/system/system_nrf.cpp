@@ -37,7 +37,7 @@ void init_peripherals() {
 
   attachInterrupt(PIN_BUTTON1, enter_dfu, CHANGE);
 
-  attachInterrupt(PIN_BUTTON3, battery_setup, FALLING);
+  attachInterrupt(PIN_BUTTON3, battery_model_set, FALLING);
 
 }
 

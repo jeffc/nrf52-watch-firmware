@@ -35,4 +35,8 @@ RTCDateTime rtc_now() {
   return out;
 }
 
+void rtc_set_unixt(int ut) {
+  rtc.adjust(ut);
+}
+
 #endif

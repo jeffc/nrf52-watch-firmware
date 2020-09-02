@@ -17,6 +17,7 @@ typedef struct {
 } RTCDateTime;
 
 void rtc_init();
+void rtc_set_unixt(int ut);
 RTCDateTime rtc_now();
 
 #endif

@@ -8,7 +8,7 @@
 #include "system.h"
 
 #include <fonts/Dustfine72pt7b.h>
-#include <Fonts/FreeMonoBold12pt7b.h>
+#include <fonts/FreeMonoBold12pt7b.h>
 #include "stdio.h"
 
 Graphics gfx = Graphics();
@@ -24,7 +24,9 @@ void setup() {
 
   //nrfx_spi_uninit();
 
+#ifdef EMBEDDED
   attachInterrupt(PIN_SQW, doit, RISING);
+#endif
 }
 
 void doit() {
@@ -91,11 +93,14 @@ void doit() {
 
   gfx.refresh();
 
+#ifdef EMBEDDED
   // feed the watchdog
   NRF_WDT->RR[0] = WDT_RR_RR_Reload;
+#endif
 }
 
 void loop() {
+#ifdef EMBEDDED
   // set time with bash command: echo "=$((`date +%s` - (4*3600)))" > /dev/ttyACM0
   if (Serial.available()) {
     switch ((char)Serial.read()) {
@@ -114,4 +119,5 @@ void loop() {
   }
   delay(100);
   //suspendLoop();
+ #endif
 }

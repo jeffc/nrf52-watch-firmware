@@ -51,7 +51,7 @@ void Adafruit_GFX_dummy_display::display(void)
 
 void Adafruit_GFX_dummy_display::clearDisplay(void)
 {
-   SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+   SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
    SDL_RenderClear(renderer_);
 }
 

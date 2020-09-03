@@ -3,6 +3,7 @@
 
 extern void setup();
 extern void loop();
+extern void doit();
 
 int main() {
   setup();
@@ -10,6 +11,7 @@ int main() {
 
   while (running) {
     loop();
+    doit();
     SDL_Event event;
     if ( SDL_PollEvent(&event) == 1 )
     {

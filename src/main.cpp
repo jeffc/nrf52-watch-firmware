@@ -15,43 +15,55 @@ Graphics gfx = Graphics();
 
 extern void doit();
 
+void enter_dfu_if_btns15() {
+  if (!digitalRead(PIN_BUTTON1) && !digitalRead(PIN_BUTTON5)) {
+    gfx.clearBuffer();
+    gfx.setCursor(65, 120);
+    gfx.printf("Device Update Mode");
+    gfx.refresh();
+    enter_dfu();
+  }
+}
+
+
 void setup() {
   init_peripherals();
-  battery_setup();
-  rtc_init();
+  //battery_setup();
+  //rtc_init();
 
+  gfx.begin();
   gfx.clearDisplay();
 
   //nrfx_spi_uninit();
 
-#ifdef EMBEDDED
+  //registerIRQ(PIN_SQW, doit, RISING);
   attachInterrupt(PIN_SQW, doit, RISING);
-#endif
+
+  registerIRQ(PIN_BUTTON1, enter_dfu_if_btns15, CHANGE);
 }
 
 void doit() {
-	RTCDateTime now = rtc_now();
 
+  Serial.println("hi");
   gfx.clearBuffer();
 
-  gfx.setTextColor(0);
-
+	RTCDateTime now = rtc_now();
 
   gfx.setFont(&Dustfine72pt7b);
   gfx.setCursor(65, 120);
   char txt[64] = {'\0'};
-  snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%02d%c", now.hour, ((now.second % 2) ? '.' : ' '));
+  gfx.printf("%02d%c", now.hour, ((now.second % 2) ? '.' : ' '));
   gfx.print(txt);
   //if (now.second % 2) {
   //  gfx.print(".");
   //}
   gfx.setCursor(65, 220);
-  snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%02d", now.minute);
+  gfx.printf("%02d", now.minute);
   gfx.print(txt);
 
   gfx.setFont(&FreeMonoBold12pt7b);
   gfx.setCursor(30, 250);
-  snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%04d-%02d-%02d", now.year, now.month, now.day);
+  gfx.printf("%04d-%02d-%02d", now.year, now.month, now.day);
   gfx.print(txt);
 
   gfx.setCursor(30, 270);
@@ -65,38 +77,28 @@ void doit() {
     int tte = get_battery_TTE();
     int totalmins = tte / 60;
     if (totalmins > 5760) {
-      snprintf(txt, sizeof(txt)/sizeof(txt[0]), "> 4 days left");
+      gfx.printf("> 4 days left");
     } else {
       if (totalmins >= (24*60)) {
-        snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%d:%02d:%02d left", totalmins / (24*60), (totalmins % (24*60))/ 60, totalmins % 60);
+        gfx.printf("%d:%02d:%02d left", totalmins / (24*60), (totalmins % (24*60))/ 60, totalmins % 60);
       } else {
-        snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%d:%02d left", totalmins / 60, totalmins % 60);
+        gfx.printf("%d:%02d left", totalmins / 60, totalmins % 60);
       }
     }
   } else {
     int ttf = get_battery_TTF();
     int totalmins = ttf / 60;
     if (totalmins > 0) {
-      snprintf(txt, sizeof(txt)/sizeof(txt[0]), "%d:%02d to full", totalmins / 60, totalmins % 60);
+      gfx.printf("%d:%02d to full", totalmins / 60, totalmins % 60);
     } else {
-      snprintf(txt, sizeof(txt)/sizeof(txt[0]), "fully charged");
+      gfx.printf("fully charged");
     }
   }
   gfx.print(txt);
 
-  //gfx.setCursor(30, 200);
-
-  //gfx.print(get_battery_current_uA());
-  //gfx.print(" uA");
-  
-
-
   gfx.refresh();
 
-#ifdef EMBEDDED
-  // feed the watchdog
-  NRF_WDT->RR[0] = WDT_RR_RR_Reload;
-#endif
+  feed_watchdog();
 }
 
 void loop() {
@@ -114,6 +116,15 @@ void loop() {
         battery_model_set();
         Serial.println("set battery model");
         break;
+      }
+      case 'i': {
+        i2cscan();
+        break;
+      }
+      case 'u': {
+        Serial.println("entering DFU");
+        Serial.flush();
+        enter_dfu();
       }
     }
   }

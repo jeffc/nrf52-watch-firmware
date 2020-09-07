@@ -11,7 +11,9 @@ int main() {
 
   while (running) {
     loop();
-    doit();
+    if(NATIVE_GFX_HACK) {
+      NATIVE_GFX_HACK->refresh();
+    }
     SDL_Event event;
     if ( SDL_PollEvent(&event) == 1 )
     {

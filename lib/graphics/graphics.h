@@ -17,6 +17,7 @@ class Graphics : public Adafruit_GFX_dummy_display {
     // stub out methods that exist in Adafruit_Sharpmem but not native
     void clearBuffer();
     void refresh() {display();};
+    void printf(const char* st, ...);
 
 #elif EMBEDDED
 #include <adafruit_sharpmem.h>
@@ -29,5 +30,11 @@ class Graphics : public Adafruit_SharpMem {
     Graphics();
 
 };
+
+#ifdef NATIVE
+// include this as a faux-singleton to refresh the screen more quickly than we
+// otherwise would.
+static Graphics* NATIVE_GFX_HACK;
+#endif
 
 #endif

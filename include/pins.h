@@ -1,5 +1,3 @@
-#ifdef EMBEDDED
-
 #ifndef _WATCH_PINS_H_
 #define _WATCH_PINS_H_
 
@@ -12,7 +10,8 @@
 #define PIN_FLASHLIGHT 0
 #define PIN_BACKLIGHT 31
 
-#define PIN_LCD_CS 4
+//#define PIN_LCD_CS 4
+#define PIN_LCD_CS 3
 
 #define PIN_SQW 27
 
@@ -23,5 +22,4 @@
 #define PIN_CHG 33
 
 
-#endif
 #endif

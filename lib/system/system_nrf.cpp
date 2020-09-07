@@ -50,10 +50,16 @@ void init_peripherals() {
 
   pinMode(PIN_CHG, INPUT_PULLUP);
 
-  attachInterrupt(PIN_BUTTON1, enter_dfu, CHANGE);
-
   attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
   attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
+}
+
+void registerIRQ(int pinnum, void (*fn)(), int mode) {
+  attachInterrupt(pinnum, fn, mode);
+}
+
+void feed_watchdog() {
+  NRF_WDT->RR[0] = WDT_RR_RR_Reload;
 }
 
 #endif

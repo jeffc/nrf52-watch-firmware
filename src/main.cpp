@@ -31,20 +31,15 @@ void setup() {
   battery_setup();
   rtc_init();
 
-  gfx.begin();
   gfx.clearDisplay();
 
-  //nrfx_spi_uninit();
-
-  //registerIRQ(PIN_SQW, doit, RISING);
-  //attachInterrupt(PIN_SQW, doit, RISING);
+  registerIRQ(PIN_SQW, doit, RISING);
 
   registerIRQ(PIN_BUTTON1, enter_dfu_if_btns15, CHANGE);
 }
 
 void doit() {
 
-  //Serial.println("hi");
   gfx.clearBuffer();
 
 	RTCDateTime now = rtc_now();
@@ -52,13 +47,10 @@ void doit() {
   gfx.setFont(&Dustfine72pt7b);
   gfx.setCursor(65, 120);
   char txt[64] = {'\0'};
-  //gfx.setTextColor(1);
+  gfx.setTextColor(0);
   gfx.printf("%02d%c", now.hour, ((now.second % 2) ? '.' : ' '));
   gfx.print(txt);
-  //if (now.second % 2) {
-  //  gfx.print(".");
-  //}
-  //gfx.setTextColor(0);
+
   gfx.setCursor(65, 220);
   gfx.printf("%02d", now.minute);
   gfx.print(txt);

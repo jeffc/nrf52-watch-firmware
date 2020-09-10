@@ -10,8 +10,8 @@
 #define PIN_FLASHLIGHT 0
 #define PIN_BACKLIGHT 31
 
-//#define PIN_LCD_CS 4
-#define PIN_LCD_CS 3
+#define PIN_LCD_CS 4
+//#define PIN_LCD_CS 3
 
 #define PIN_SQW 27
 

@@ -28,8 +28,8 @@ void enter_dfu_if_btns15() {
 
 void setup() {
   init_peripherals();
-  //battery_setup();
-  //rtc_init();
+  battery_setup();
+  rtc_init();
 
   gfx.begin();
   gfx.clearDisplay();
@@ -37,14 +37,14 @@ void setup() {
   //nrfx_spi_uninit();
 
   //registerIRQ(PIN_SQW, doit, RISING);
-  attachInterrupt(PIN_SQW, doit, RISING);
+  //attachInterrupt(PIN_SQW, doit, RISING);
 
   registerIRQ(PIN_BUTTON1, enter_dfu_if_btns15, CHANGE);
 }
 
 void doit() {
 
-  Serial.println("hi");
+  //Serial.println("hi");
   gfx.clearBuffer();
 
 	RTCDateTime now = rtc_now();
@@ -52,11 +52,13 @@ void doit() {
   gfx.setFont(&Dustfine72pt7b);
   gfx.setCursor(65, 120);
   char txt[64] = {'\0'};
+  //gfx.setTextColor(1);
   gfx.printf("%02d%c", now.hour, ((now.second % 2) ? '.' : ' '));
   gfx.print(txt);
   //if (now.second % 2) {
   //  gfx.print(".");
   //}
+  //gfx.setTextColor(0);
   gfx.setCursor(65, 220);
   gfx.printf("%02d", now.minute);
   gfx.print(txt);
@@ -102,33 +104,35 @@ void doit() {
 }
 
 void loop() {
-#ifdef EMBEDDED
-  // set time with bash command: echo "=$((`date +%s` - (4*3600)))" > /dev/ttyACM0
-  if (Serial.available()) {
-    switch ((char)Serial.read()) {
-      case '=': {
-        int unixt = Serial.parseInt();
-        rtc_set_unixt(unixt);
-        Serial.println("set time");
-        break;
-      }
-      case 'b': {
-        battery_model_set();
-        Serial.println("set battery model");
-        break;
-      }
-      case 'i': {
-        i2cscan();
-        break;
-      }
-      case 'u': {
-        Serial.println("entering DFU");
-        Serial.flush();
-        enter_dfu();
-      }
-    }
-  }
-  delay(100);
-  //suspendLoop();
- #endif
+//doit();
+suspendLoop();
+//return;
+//#ifdef EMBEDDED
+//  // set time with bash command: echo "=$((`date +%s` - (4*3600)))" > /dev/ttyACM0
+//  if (Serial.available()) {
+//    switch ((char)Serial.read()) {
+//      case '=': {
+//        int unixt = Serial.parseInt();
+//        rtc_set_unixt(unixt);
+//        Serial.println("set time");
+//        break;
+//      }
+//      case 'b': {
+//        battery_model_set();
+//        Serial.println("set battery model");
+//        break;
+//      }
+//      case 'i': {
+//        i2cscan();
+//        break;
+//      }
+//      case 'u': {
+//        Serial.println("entering DFU");
+//        Serial.flush();
+//        enter_dfu();
+//      }
+//    }
+//  }
+//  delay(1000);
+// #endif
 }

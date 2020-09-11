@@ -3,7 +3,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
-#define DFU_MAGIC_UF2_RESET             0x57
+#define DFU_MAGIC_UF2_RESET 0x57
 
 void i2cscan();
 

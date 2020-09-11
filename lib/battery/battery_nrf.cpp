@@ -1,7 +1,6 @@
 #ifdef EMBEDDED
 
 #include "battery.h"
-#include <stdint.h>
 #include <Arduino.h>
 #include <Wire.h>
 #include <stdint.h>
@@ -26,7 +25,6 @@ void i2c_write_register16(uint8_t addr, uint8_t reg, uint16_t val) {
   Wire.endTransmission();
 }
 
-
 Battery::Battery() {
   uint16_t status_reg = i2c_read_register16(0x36, 0x00);
 
@@ -43,9 +41,11 @@ Battery::Battery() {
 
       // clear POR bit
       Serial.println("Clearing POR flag");
-      while (i2c_read_register16(0x36, 0x00) & 0x02) { i2c_write_register16(0x36, 0x00, status_reg & 0xFFFD); }
+      while (i2c_read_register16(0x36, 0x00) & 0x02) {
+        i2c_write_register16(0x36, 0x00, status_reg & 0xFFFD);
+      }
     }
-  } 
+  }
 }
 
 void Battery::set_model() {
@@ -81,7 +81,7 @@ uint8_t Battery::get_percent() {
 
 int Battery::get_voltage_mV() {
   uint16_t reg = i2c_read_register16(0x36, 0x09);
-  return (reg * 1.25)/16;
+  return (reg * 1.25) / 16;
 }
 
 int Battery::get_current_uA() {
@@ -98,8 +98,5 @@ int Battery::get_TTF() {
   int16_t reg = i2c_read_register16(0x36, 0x20);
   return (reg * 5.625);
 }
-
-
-
 
 #endif

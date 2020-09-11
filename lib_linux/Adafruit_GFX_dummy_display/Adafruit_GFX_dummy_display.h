@@ -27,37 +27,37 @@
 #ifndef Adafruit_GFX_dummy_display_h
 #define Adafruit_GFX_dummy_display_h
 
-#include "Arduino.h"
 #include "Adafruit_GFX.h"
+#include "Arduino.h"
 #include <SDL2/SDL.h>
 
-class Adafruit_GFX_dummy_display : public Adafruit_GFX
-{
-    public:
-        Adafruit_GFX_dummy_display(uint16_t w, uint16_t h, uint16_t zoom = 1); // Constructor
-	    ~Adafruit_GFX_dummy_display();
-	    void display(void);
-        void clearDisplay(void);
-	    void drawPixel(int16_t x, int16_t y, uint16_t color);
-        void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
-        void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-        void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
-        void fillScreen(uint16_t color);
-        /* So far a monochrome display , TODO: add colors */
-        const static uint16_t BLACK  = 0;
-        const static uint16_t WHITE  = 1;
-        const static uint16_t   RED  = 2;
-        const static uint16_t ORANGE = 3;
-        const static uint16_t YELLOW = 4;
-        const static uint16_t GREEN  = 5;
-        const static uint16_t BLUE   = 6;
-    private:
-        void initWindowAndRendered(uint16_t w, uint16_t h);
-        void setColor(uint16_t color);
-        SDL_Window *window_;
-        SDL_Renderer *renderer_;
-        uint16_t zoom_ratio_;
+class Adafruit_GFX_dummy_display : public Adafruit_GFX {
+public:
+  Adafruit_GFX_dummy_display(uint16_t w, uint16_t h,
+                             uint16_t zoom = 1); // Constructor
+  ~Adafruit_GFX_dummy_display();
+  void display(void);
+  void clearDisplay(void);
+  void drawPixel(int16_t x, int16_t y, uint16_t color);
+  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
+  void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+  void fillScreen(uint16_t color);
+  /* So far a monochrome display , TODO: add colors */
+  const static uint16_t BLACK = 0;
+  const static uint16_t WHITE = 1;
+  const static uint16_t RED = 2;
+  const static uint16_t ORANGE = 3;
+  const static uint16_t YELLOW = 4;
+  const static uint16_t GREEN = 5;
+  const static uint16_t BLUE = 6;
 
+private:
+  void initWindowAndRendered(uint16_t w, uint16_t h);
+  void setColor(uint16_t color);
+  SDL_Window *window_;
+  SDL_Renderer *renderer_;
+  uint16_t zoom_ratio_;
 };
 
 #endif

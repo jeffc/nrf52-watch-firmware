@@ -21,5 +21,4 @@
 
 #define PIN_CHG 33
 
-
 #endif

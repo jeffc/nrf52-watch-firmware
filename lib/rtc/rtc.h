@@ -17,10 +17,10 @@ typedef struct {
 } RTCDateTime;
 
 class RTC {
-  public:
-    RTC();
-    void set_unixt(int ut);
-    RTCDateTime now();
+public:
+  RTC();
+  void set_unixt(int ut);
+  RTCDateTime now();
 };
 
 #endif

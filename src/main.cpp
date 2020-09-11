@@ -1,22 +1,22 @@
 #include "pins.h"
 
 #include "battery.h"
-#include "util.h"
-#include "rtc.h"
 #include "graphics.h"
+#include "rtc.h"
 #include "system.h"
+#include "util.h"
 
+#include "stdio.h"
 #include <fonts/Dustfine72pt7b.h>
 #include <fonts/FreeMonoBold12pt7b.h>
-#include "stdio.h"
 
-System* sys;
+System *sys;
 
 extern void doit();
 
 void enter_dfu_if_btns15() {
 #ifdef EMBEDDED
-  Graphics* gfx = sys->getGraphics();
+  Graphics *gfx = sys->getGraphics();
   if (!digitalRead(PIN_BUTTON1) && !digitalRead(PIN_BUTTON5)) {
     gfx->clearBuffer();
     gfx->setCursor(20, 100);
@@ -27,11 +27,10 @@ void enter_dfu_if_btns15() {
 #endif
 }
 
-
 void setup() {
   sys = new System();
 
-  Graphics* gfx = sys->getGraphics();
+  Graphics *gfx = sys->getGraphics();
   gfx->clearDisplay();
 
   sys->registerIRQ(PIN_SQW, doit, RISING);
@@ -40,13 +39,13 @@ void setup() {
 
 void doit() {
 
-  Graphics* gfx = sys->getGraphics();
-  RTC* rtc = sys->getRTC();
-  Battery* battery = sys->getBattery();
+  Graphics *gfx = sys->getGraphics();
+  RTC *rtc = sys->getRTC();
+  Battery *battery = sys->getBattery();
 
   gfx->clearBuffer();
 
-	RTCDateTime now = rtc->now();
+  RTCDateTime now = rtc->now();
 
   gfx->setFont(&Dustfine72pt7b);
   gfx->setCursor(55, 120);
@@ -77,8 +76,9 @@ void doit() {
     if (totalmins > 5760) {
       gfx->printf("> 4 days left");
     } else {
-      if (totalmins >= (24*60)) {
-        gfx->printf("%d:%02d:%02d left", totalmins / (24*60), (totalmins % (24*60))/ 60, totalmins % 60);
+      if (totalmins >= (24 * 60)) {
+        gfx->printf("%d:%02d:%02d left", totalmins / (24 * 60),
+                    (totalmins % (24 * 60)) / 60, totalmins % 60);
       } else {
         gfx->printf("%d:%02d left", totalmins / 60, totalmins % 60);
       }
@@ -101,36 +101,37 @@ void doit() {
 
 void loop() {
 #ifdef EMBEDDED
-  //suspendLoop();
+  // suspendLoop();
 #endif
 #ifdef EMBEDDED
-  RTC* rtc = sys->getRTC();
-  Battery* battery = sys->getBattery();
-  // set time with bash command: echo "=$((`date +%s` - (4*3600)))" > /dev/ttyACM0
+  RTC *rtc = sys->getRTC();
+  Battery *battery = sys->getBattery();
+  // set time with bash command: echo "=$((`date +%s` - (4*3600)))" >
+  // /dev/ttyACM0
   if (Serial.available()) {
     switch ((char)Serial.read()) {
-      case '=': {
-        int unixt = Serial.parseInt();
-        rtc->set_unixt(unixt);
-        Serial.println("set time");
-        break;
-      }
-      case 'b': {
-        battery->set_model();
-        Serial.println("set battery model");
-        break;
-      }
-      case 'i': {
-        i2cscan();
-        break;
-      }
-      case 'u': {
-        Serial.println("entering DFU");
-        Serial.flush();
-        enter_dfu();
-      }
+    case '=': {
+      int unixt = Serial.parseInt();
+      rtc->set_unixt(unixt);
+      Serial.println("set time");
+      break;
+    }
+    case 'b': {
+      battery->set_model();
+      Serial.println("set battery model");
+      break;
+    }
+    case 'i': {
+      i2cscan();
+      break;
+    }
+    case 'u': {
+      Serial.println("entering DFU");
+      Serial.flush();
+      enter_dfu();
+    }
     }
   }
   delay(1000);
- #endif
+#endif
 }

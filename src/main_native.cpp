@@ -11,14 +11,14 @@ extern void doit();
 // rendering threads to play nice with our interrupt-driven single-core-CPU
 // code. The mutex effectively emulates that core, and we lock/unlock the
 // display (or the thread updating it).
-extern System* sys;
+extern System *sys;
 std::mutex runlock;
 
 int main() {
   setup();
   int running = 1;
-  
-  Graphics* gfx = sys->getGraphics();
+
+  Graphics *gfx = sys->getGraphics();
 
   while (running) {
     loop();
@@ -26,17 +26,15 @@ int main() {
     gfx->display();
     runlock.unlock();
     SDL_Event event;
-    if ( SDL_PollEvent(&event) == 1 )
-    {
-      switch (event.type)
-      {
-        case SDL_QUIT:
-          running = 0;
-          break;
-        default:
-          /* running
-           * */
-          break;
+    if (SDL_PollEvent(&event) == 1) {
+      switch (event.type) {
+      case SDL_QUIT:
+        running = 0;
+        break;
+      default:
+        /* running
+         * */
+        break;
       }
     }
   }

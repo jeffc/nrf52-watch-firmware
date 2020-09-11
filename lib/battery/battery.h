@@ -4,15 +4,15 @@
 #include <stdint.h>
 
 class Battery {
-  public:
-    Battery();
+public:
+  Battery();
 
-    void set_model();
-    uint8_t get_percent();
-    int get_voltage_mV();
-    int get_current_uA();
-    int get_TTE();
-    int get_TTF();
+  void set_model();
+  uint8_t get_percent();
+  int get_voltage_mV();
+  int get_current_uA();
+  int get_TTE();
+  int get_TTF();
 };
 
 #endif

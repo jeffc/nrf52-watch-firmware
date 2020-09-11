@@ -3,12 +3,16 @@
 
 #include <stdint.h>
 
-void battery_setup();
-void battery_model_set();
-uint8_t get_battery_percent();
-int get_battery_voltage_mv();
-int get_battery_current_uA();
-int get_battery_TTE();
-int get_battery_TTF();
+class Battery {
+  public:
+    Battery();
+
+    void set_model();
+    uint8_t get_percent();
+    int get_voltage_mV();
+    int get_current_uA();
+    int get_TTE();
+    int get_TTF();
+};
 
 #endif

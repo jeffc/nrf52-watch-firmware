@@ -27,7 +27,7 @@ void i2c_write_register16(uint8_t addr, uint8_t reg, uint16_t val) {
 }
 
 
-void battery_setup() {
+Battery::Battery() {
   uint16_t status_reg = i2c_read_register16(0x36, 0x00);
 
   Serial.printf("0x%x\r\n", status_reg);
@@ -39,7 +39,7 @@ void battery_setup() {
     if (fstat_reg & 1) { // DNR
       Serial.println("DNR flag set, skipping");
     } else {
-      battery_model_set();
+      set_model();
 
       // clear POR bit
       Serial.println("Clearing POR flag");
@@ -48,7 +48,7 @@ void battery_setup() {
   } 
 }
 
-void battery_model_set() {
+void Battery::set_model() {
   // get hibcfg value
   uint16_t hibcfg = i2c_read_register16(0x36, 0xBA);
   // wake up (3 steps, per manufacturer reference)
@@ -73,28 +73,28 @@ void battery_model_set() {
   i2c_write_register16(0x36, 0xBA, hibcfg);
 }
 
-uint8_t get_battery_percent() {
+uint8_t Battery::get_percent() {
   uint16_t battery_pct = i2c_read_register16(0x36, 0x06);
   uint8_t bpct_h = (battery_pct >> 8) & 0xFF;
   return bpct_h;
 }
 
-int get_battery_voltage_mv() {
+int Battery::get_voltage_mV() {
   uint16_t reg = i2c_read_register16(0x36, 0x09);
   return (reg * 1.25)/16;
 }
 
-int get_battery_current_uA() {
+int Battery::get_current_uA() {
   int16_t reg = i2c_read_register16(0x36, 0x0B);
   return (reg * 156.25);
 }
 
-int get_battery_TTE() {
+int Battery::get_TTE() {
   uint64_t reg = i2c_read_register16(0x36, 0x11);
   return (reg * 5.625);
 }
 
-int get_battery_TTF() {
+int Battery::get_TTF() {
   int16_t reg = i2c_read_register16(0x36, 0x20);
   return (reg * 5.625);
 }

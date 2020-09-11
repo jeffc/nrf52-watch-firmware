@@ -12,6 +12,8 @@
 #include "stdio.h"
 
 Graphics gfx = Graphics();
+RTC rtc = RTC();
+Battery battery = Battery();
 
 extern void doit();
 
@@ -30,8 +32,6 @@ void enter_dfu_if_btns15() {
 
 void setup() {
   init_peripherals();
-  battery_setup();
-  rtc_init();
 
   gfx.clearDisplay();
 
@@ -44,7 +44,7 @@ void doit() {
 
   gfx.clearBuffer();
 
-	RTCDateTime now = rtc_now();
+	RTCDateTime now = rtc.now();
 
   gfx.setFont(&Dustfine72pt7b);
   gfx.setCursor(55, 120);
@@ -64,13 +64,13 @@ void doit() {
 
   gfx.setCursor(30, 270);
   gfx.print("batt: ");
-  gfx.print(get_battery_percent());
+  gfx.print(battery.get_percent());
   gfx.print("%");
 
   gfx.setCursor(30, 290);
 
-  if (get_battery_current_uA() < 0) {
-    int tte = get_battery_TTE();
+  if (battery.get_current_uA() < 0) {
+    int tte = battery.get_TTE();
     int totalmins = tte / 60;
     if (totalmins > 5760) {
       gfx.printf("> 4 days left");
@@ -82,7 +82,7 @@ void doit() {
       }
     }
   } else {
-    int ttf = get_battery_TTF();
+    int ttf = battery.get_TTF();
     int totalmins = ttf / 60;
     if (totalmins > 0) {
       gfx.printf("%d:%02d to full", totalmins / 60, totalmins % 60);

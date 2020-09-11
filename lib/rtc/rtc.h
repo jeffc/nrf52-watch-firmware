@@ -16,8 +16,11 @@ typedef struct {
   uint8_t dayOfWeek;
 } RTCDateTime;
 
-void rtc_init();
-void rtc_set_unixt(int ut);
-RTCDateTime rtc_now();
+class RTC {
+  public:
+    RTC();
+    void set_unixt(int ut);
+    RTCDateTime now();
+};
 
 #endif

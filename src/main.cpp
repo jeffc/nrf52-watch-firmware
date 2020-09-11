@@ -18,8 +18,8 @@ extern void doit();
 void enter_dfu_if_btns15() {
   if (!digitalRead(PIN_BUTTON1) && !digitalRead(PIN_BUTTON5)) {
     gfx.clearBuffer();
-    gfx.setCursor(65, 120);
-    gfx.printf("Device Update Mode");
+    gfx.setCursor(20, 100);
+    gfx.printf("Device\nUpdate\nMode");
     gfx.refresh();
     enter_dfu();
   }
@@ -45,13 +45,13 @@ void doit() {
 	RTCDateTime now = rtc_now();
 
   gfx.setFont(&Dustfine72pt7b);
-  gfx.setCursor(65, 120);
+  gfx.setCursor(55, 120);
   char txt[64] = {'\0'};
   gfx.setTextColor(0);
   gfx.printf("%02d%c", now.hour, ((now.second % 2) ? '.' : ' '));
   gfx.print(txt);
 
-  gfx.setCursor(65, 220);
+  gfx.setCursor(55, 220);
   gfx.printf("%02d", now.minute);
   gfx.print(txt);
 

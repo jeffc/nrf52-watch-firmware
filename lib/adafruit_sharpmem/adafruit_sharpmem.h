@@ -49,10 +49,9 @@ All text above, and the splash screen must be included in any redistribution
 #endif
 
 
-
 class Adafruit_SharpMem : public Adafruit_GFX {
  public:
-  Adafruit_SharpMem(uint8_t clk, uint8_t mosi, uint8_t ss, uint16_t w = 96, uint16_t h = 96);
+  Adafruit_SharpMem(uint8_t clk, uint8_t mosi, uint8_t ss, uint16_t w = 96, uint16_t h = 96, uint16_t dummy_x=0, uint16_t dummy_y=0);
   boolean begin();
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   uint8_t getPixel(uint16_t x, uint16_t y);
@@ -62,6 +61,7 @@ class Adafruit_SharpMem : public Adafruit_GFX {
 
  private:
   uint8_t _ss, _clk, _mosi;
+  uint16_t _dummyx, _dummyy;
   uint32_t _sharpmem_vcom;
 
 #ifdef USE_FAST_PINIO

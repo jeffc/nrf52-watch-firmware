@@ -1,5 +1,6 @@
 #ifdef NATIVE
 #include "graphics.h"
+#include "system.h"
 #include <mutex>
 
 extern void setup();
@@ -10,17 +11,19 @@ extern void doit();
 // rendering threads to play nice with our interrupt-driven single-core-CPU
 // code. The mutex effectively emulates that core, and we lock/unlock the
 // display (or the thread updating it).
-extern Graphics gfx;
+extern System* sys;
 std::mutex runlock;
 
 int main() {
   setup();
   int running = 1;
+  
+  Graphics* gfx = sys->getGraphics();
 
   while (running) {
     loop();
     runlock.lock();
-    gfx.display();
+    gfx->display();
     runlock.unlock();
     SDL_Event event;
     if ( SDL_PollEvent(&event) == 1 )

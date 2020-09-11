@@ -1,4 +1,3 @@
-
 #include "pins.h"
 
 #include "battery.h"
@@ -11,18 +10,13 @@
 #include <fonts/FreeMonoBold12pt7b.h>
 #include "stdio.h"
 
-//Graphics gfx = Graphics();
-//RTC rtc = RTC();
-//Battery battery = Battery();
-
-Graphics* gfx;
-RTC* rtc;
-Battery* battery;
+System* sys;
 
 extern void doit();
 
 void enter_dfu_if_btns15() {
 #ifdef EMBEDDED
+  Graphics* gfx = sys->getGraphics();
   if (!digitalRead(PIN_BUTTON1) && !digitalRead(PIN_BUTTON5)) {
     gfx->clearBuffer();
     gfx->setCursor(20, 100);
@@ -35,20 +29,20 @@ void enter_dfu_if_btns15() {
 
 
 void setup() {
-  init_peripherals();
+  sys = new System();
 
-  gfx = new Graphics();
-  rtc = new RTC();
-  battery = new Battery();
-
+  Graphics* gfx = sys->getGraphics();
   gfx->clearDisplay();
 
-  registerIRQ(PIN_SQW, doit, RISING);
-
-  registerIRQ(PIN_BUTTON1, enter_dfu_if_btns15, CHANGE);
+  sys->registerIRQ(PIN_SQW, doit, RISING);
+  sys->registerIRQ(PIN_BUTTON1, enter_dfu_if_btns15, CHANGE);
 }
 
 void doit() {
+
+  Graphics* gfx = sys->getGraphics();
+  RTC* rtc = sys->getRTC();
+  Battery* battery = sys->getBattery();
 
   gfx->clearBuffer();
 
@@ -102,7 +96,7 @@ void doit() {
 
   gfx->refresh();
 
-  feed_watchdog();
+  sys->feedWatchdog();
 }
 
 void loop() {
@@ -110,6 +104,8 @@ void loop() {
   //suspendLoop();
 #endif
 #ifdef EMBEDDED
+  RTC* rtc = sys->getRTC();
+  Battery* battery = sys->getBattery();
   // set time with bash command: echo "=$((`date +%s` - (4*3600)))" > /dev/ttyACM0
   if (Serial.available()) {
     switch ((char)Serial.read()) {

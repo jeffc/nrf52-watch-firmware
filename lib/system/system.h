@@ -1,6 +1,10 @@
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
 
+#include <battery.h>
+#include <graphics.h>
+#include <rtc.h>
+
 #ifdef NATIVE
 
 #define RISING  1
@@ -9,11 +13,22 @@
 
 #endif
 
+class System {
+  public:
+    System();
 
-void init_peripherals();
+    void registerIRQ(int pinnum, void (*fn)(), int mode);
+    void feedWatchdog();
 
-void registerIRQ(int pinnum, void (*fn)(), int mode);
+    Graphics* getGraphics();
+    RTC* getRTC();
+    Battery* getBattery();
 
-void feed_watchdog();
+  private:
+
+    Graphics* _gfx;
+    RTC* _rtc;
+    Battery* _battery;
+};
 
 #endif

@@ -9,8 +9,10 @@
 
 extern std::mutex runlock;
 
-void init_peripherals() {
-  printf("init_peripherals() called\n");
+System::System() {
+  _gfx = new Graphics();
+  _rtc = new RTC();
+  _battery = new Battery();
 }
 
 uint32_t oneSecondCallbackFn(uint32_t interval, void* param) {
@@ -20,7 +22,7 @@ uint32_t oneSecondCallbackFn(uint32_t interval, void* param) {
   return 1000; // set the next timer for 1s from now
 }
 
-void registerIRQ(int pinnum, void (*fn)(), int mode) {
+void System::registerIRQ(int pinnum, void (*fn)(), int mode) {
   // special case the ones we know about
   if (pinnum == PIN_SQW && mode == RISING) {
     printf("Registering SQW timer\n");
@@ -30,7 +32,19 @@ void registerIRQ(int pinnum, void (*fn)(), int mode) {
   }
 }
 
-void feed_watchdog() {
+void System::feedWatchdog() {
+}
+
+Graphics* System::getGraphics() {
+  return _gfx;
+}
+
+RTC* System::getRTC() {
+  return _rtc;
+}
+
+Battery* System::getBattery() {
+  return _battery;
 }
 
 #endif

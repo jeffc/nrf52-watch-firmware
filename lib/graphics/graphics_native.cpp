@@ -1,9 +1,9 @@
 #ifdef NATIVE
 
 #include <graphics.h>
+#include <stdio.h>
 
 Graphics::Graphics() : Adafruit_GFX_dummy_display(SCREEN_WIDTH, SCREEN_HEIGHT, 3 /* zoom */) {
-  NATIVE_GFX_HACK=this;
 }
 
 void Graphics::clearBuffer() {

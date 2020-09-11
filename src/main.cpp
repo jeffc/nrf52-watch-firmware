@@ -16,6 +16,7 @@ Graphics gfx = Graphics();
 extern void doit();
 
 void enter_dfu_if_btns15() {
+#ifdef EMBEDDED
   if (!digitalRead(PIN_BUTTON1) && !digitalRead(PIN_BUTTON5)) {
     gfx.clearBuffer();
     gfx.setCursor(20, 100);
@@ -23,6 +24,7 @@ void enter_dfu_if_btns15() {
     gfx.refresh();
     enter_dfu();
   }
+#endif
 }
 
 
@@ -96,9 +98,9 @@ void doit() {
 }
 
 void loop() {
-//doit();
-suspendLoop();
-//return;
+#ifdef EMBEDDED
+  suspendLoop();
+#endif
 //#ifdef EMBEDDED
 //  // set time with bash command: echo "=$((`date +%s` - (4*3600)))" > /dev/ttyACM0
 //  if (Serial.available()) {

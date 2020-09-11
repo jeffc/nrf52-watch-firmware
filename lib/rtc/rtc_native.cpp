@@ -12,7 +12,7 @@ RTCDateTime rtc_now() {
   std::time_t t = std::time(0);
   std::tm* now = std::localtime(&t);
   return RTCDateTime {
-    .year = (uint16_t)now->tm_year,
+    .year = (uint16_t)now->tm_year+1900 /* to match the physical RTC interface */,
     .month = (uint8_t)now->tm_mon,
     .day = (uint8_t)now->tm_mday,
     .hour = (uint8_t)now->tm_hour,

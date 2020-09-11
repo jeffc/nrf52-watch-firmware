@@ -5,15 +5,18 @@
 #include "pins.h"
 #include "system.h"
 #include <Adafruit_GFX_dummy_display.h>
+#include <mutex>
+
+extern std::mutex runlock;
 
 void init_peripherals() {
-  printf("init_peripherals() called");
-
+  printf("init_peripherals() called\n");
 }
 
 uint32_t oneSecondCallbackFn(uint32_t interval, void* param) {
-  printf("callback'd\n");
+  runlock.lock();
   ((void (*)())param)(); // call param as a function pointer
+  runlock.unlock();
   return 1000; // set the next timer for 1s from now
 }
 

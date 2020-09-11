@@ -3,10 +3,11 @@
 #include "rtc.h"
 #include <M41T62.h>
 
-RTC_M41T62 _rtc;
+RTC_M41T62* _rtc;
 
 RTC::RTC() {
-	_rtc.begin();
+  _rtc = new RTC_M41T62();
+	_rtc->begin();
 
 	// following line sets the RTC to the date & time this sketch was compiled
 	//rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
@@ -15,13 +16,13 @@ RTC::RTC() {
 	// rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 
 
-  _rtc.writeSqwPinMode(Sqw1Hz);
-  _rtc.checkFlags();
-  _rtc.alarmEnable(0);
+  _rtc->writeSqwPinMode(Sqw1Hz);
+  _rtc->checkFlags();
+  _rtc->alarmEnable(0);
 }
 
 RTCDateTime RTC::now() {
-  DateTime now = _rtc.now();
+  DateTime now = _rtc->now();
   RTCDateTime out = {
     .year = now.year(),
     .month = now.month(),
@@ -35,7 +36,7 @@ RTCDateTime RTC::now() {
 }
 
 void RTC::set_unixt(int ut) {
-  _rtc.adjust(ut);
+  _rtc->adjust(ut);
 }
 
 #endif

@@ -15,16 +15,14 @@ System *sys;
 extern void doit();
 
 void enter_dfu_if_btns15() {
-#ifdef EMBEDDED
   Graphics *gfx = sys->getGraphics();
-  if (!digitalRead(PIN_BUTTON1) && !digitalRead(PIN_BUTTON5)) {
+  if (sys->getButtonPressed(PIN_BUTTON1) && sys->getButtonPressed(PIN_BUTTON5)) {
     gfx->clearBuffer();
     gfx->setCursor(20, 100);
     gfx->printf("Device\nUpdate\nMode");
     gfx->refresh();
     enter_dfu();
   }
-#endif
 }
 
 void setup() {

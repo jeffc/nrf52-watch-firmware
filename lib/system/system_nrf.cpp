@@ -64,6 +64,10 @@ void System::registerIRQ(int pinnum, void (*fn)(), int mode) {
   attachInterrupt(pinnum, fn, mode);
 }
 
+bool System::getButtonPressed(int pin) {
+  return (digitalRead(pin) != HIGH);
+}
+
 void System::feedWatchdog() { NRF_WDT->RR[0] = WDT_RR_RR_Reload; }
 
 Graphics *System::getGraphics() { return _gfx; }

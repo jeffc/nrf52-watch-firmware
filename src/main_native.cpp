@@ -1,35 +1,69 @@
 #ifdef NATIVE
+#include <map>
+
 #include "graphics.h"
 #include "system.h"
-#include <mutex>
+#include "pins.h"
 
+// these are declared in main.cpp
 extern void setup();
 extern void loop();
 extern void doit();
-
-// there are a lot of awful things we have to do to get the native SDL graphics
-// rendering threads to play nice with our interrupt-driven single-core-CPU
-// code. The mutex effectively emulates that core, and we lock/unlock the
-// display (or the thread updating it).
 extern System *sys;
-std::mutex runlock;
+
+// convert SDL keypresses into interrupts for the interrupts engine
+std::map<SDL_Keycode, int> keys_map = {
+  {SDLK_UP, PIN_BUTTON1},
+  {SDLK_DOWN, PIN_BUTTON3},
+  {SDLK_LEFT, PIN_BUTTON5},
+};
+
+void handleKeyEvent(SDL_Keycode key, bool keydown) {
+  auto it = keys_map.find(key);
+
+
+  if (it != keys_map.end()) {
+    if (keydown) {
+      System::buttonsPressed.insert(it->second);
+    } else {
+      System::buttonsPressed.erase(it->second);
+    }
+    sys->fireIRQ(it->second, (keydown) ? FALLING : RISING);
+    sys->fireIRQ(it->second, CHANGE);
+  }
+}
+
+
+uint32_t oneSecondCallbackFn(uint32_t interval, void *param) {
+  sys->fireIRQ(PIN_SQW, RISING);
+  return 1000; // set the next timer for 1s from now
+}
 
 int main() {
   setup();
   int running = 1;
 
+  SDL_AddTimer(1000, oneSecondCallbackFn, NULL);
   Graphics *gfx = sys->getGraphics();
 
   while (running) {
     loop();
-    runlock.lock();
+    System::runlock.lock();
     gfx->display();
-    runlock.unlock();
+    System::runlock.unlock();
     SDL_Event event;
     if (SDL_PollEvent(&event) == 1) {
       switch (event.type) {
       case SDL_QUIT:
         running = 0;
+        break;
+      case SDL_KEYDOWN:
+        if (event.key.repeat == 0) {
+          handleKeyEvent(event.key.keysym.sym, true); 
+        }
+        break;
+      case SDL_KEYUP:
+        handleKeyEvent(event.key.keysym.sym, false); 
         break;
       default:
         /* running

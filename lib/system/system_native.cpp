@@ -3,11 +3,18 @@
 #include "pins.h"
 #include "system.h"
 #include <Adafruit_GFX_dummy_display.h>
+#include <map>
 #include <mutex>
+#include <set>
 #include <stdint.h>
 #include <stdio.h>
 
-extern std::mutex runlock;
+std::mutex System::runlock;
+std::set<int> System::buttonsPressed;
+
+typedef void (*callbackFunctionType)(void); 
+std::map<std::pair<int,int>,callbackFunctionType> callbackMap;
+
 
 System::System() {
   _gfx = new Graphics();
@@ -15,20 +22,23 @@ System::System() {
   _battery = new Battery();
 }
 
-uint32_t oneSecondCallbackFn(uint32_t interval, void *param) {
-  runlock.lock();
-  ((void (*)())param)(); // call param as a function pointer
-  runlock.unlock();
-  return 1000; // set the next timer for 1s from now
+void System::registerIRQ(int pinnum, void (*fn)(), int mode) {
+  std::pair<int,int> mapkey = {pinnum, mode};
+  if (callbackMap.count(mapkey) > 0) {
+    printf("Tried to register duplicate IRQ %d (%d)\n", pinnum, mode);
+  } else {
+    callbackMap[mapkey] = fn;
+    printf("Registered IRQ %d (%d)\n", pinnum, mode);
+  }
 }
 
-void System::registerIRQ(int pinnum, void (*fn)(), int mode) {
-  // special case the ones we know about
-  if (pinnum == PIN_SQW && mode == RISING) {
-    printf("Registering SQW timer\n");
-    SDL_AddTimer(1000, oneSecondCallbackFn, (void *)fn);
-  } else {
-    printf("Tried to register unknown IRQ %d (%d)\n", pinnum, mode);
+void System::fireIRQ(int pin, int mode) {
+  std::pair<int,int> mapkey = {pin, mode};
+  auto it = callbackMap.find(mapkey);
+  if (it != callbackMap.end()) {
+    runlock.lock();
+    it->second();
+    runlock.unlock();
   }
 }
 
@@ -39,5 +49,9 @@ Graphics *System::getGraphics() { return _gfx; }
 RTC *System::getRTC() { return _rtc; }
 
 Battery *System::getBattery() { return _battery; }
+
+bool System::getButtonPressed(int pin) {
+  return (System::buttonsPressed.count(pin) > 0);
+}
 
 #endif

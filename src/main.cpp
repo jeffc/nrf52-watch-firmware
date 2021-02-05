@@ -66,30 +66,30 @@ void doit() {
   gfx->print(battery->get_percent());
   gfx->print("%");
 
-  gfx->setCursor(30, 290);
+  //gfx->setCursor(30, 290);
 
-  if (battery->get_current_uA() < 0) {
-    int tte = battery->get_TTE();
-    int totalmins = tte / 60;
-    if (totalmins > 5760) {
-      gfx->printf("> 4 days left");
-    } else {
-      if (totalmins >= (24 * 60)) {
-        gfx->printf("%d:%02d:%02d left", totalmins / (24 * 60),
-                    (totalmins % (24 * 60)) / 60, totalmins % 60);
-      } else {
-        gfx->printf("%d:%02d left", totalmins / 60, totalmins % 60);
-      }
-    }
-  } else {
-    int ttf = battery->get_TTF();
-    int totalmins = ttf / 60;
-    if (totalmins > 0) {
-      gfx->printf("%d:%02d to full", totalmins / 60, totalmins % 60);
-    } else {
-      gfx->printf("fully charged");
-    }
-  }
+  //if (battery->get_current_uA() < 0) {
+  //  int tte = battery->get_TTE();
+  //  int totalmins = tte / 60;
+  //  if (totalmins > 5760) {
+  //    gfx->printf("> 4 days left");
+  //  } else {
+  //    if (totalmins >= (24 * 60)) {
+  //      gfx->printf("%d:%02d:%02d left", totalmins / (24 * 60),
+  //                  (totalmins % (24 * 60)) / 60, totalmins % 60);
+  //    } else {
+  //      gfx->printf("%d:%02d left", totalmins / 60, totalmins % 60);
+  //    }
+  //  }
+  //} else {
+  //  int ttf = battery->get_TTF();
+  //  int totalmins = ttf / 60;
+  //  if (totalmins > 0) {
+  //    gfx->printf("%d:%02d to full", totalmins / 60, totalmins % 60);
+  //  } else {
+  //    gfx->printf("fully charged");
+  //  }
+  //}
   gfx->print(txt);
 
   gfx->refresh();
@@ -115,6 +115,7 @@ void loop() {
       break;
     }
     case 'b': {
+      Serial.println("setting battery model");
       battery->set_model();
       Serial.println("set battery model");
       break;
@@ -130,6 +131,6 @@ void loop() {
     }
     }
   }
-  delay(1000);
+  delay(100);
 #endif
 }

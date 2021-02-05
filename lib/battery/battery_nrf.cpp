@@ -25,77 +25,92 @@ void i2c_write_register16(uint8_t addr, uint8_t reg, uint16_t val) {
   Wire.endTransmission();
 }
 
+void i2c_write_and_verify_register16(uint8_t addr, uint8_t reg, uint16_t val) {
+  int attempts = 0;
+  do {
+    i2c_write_register16(addr, reg, val);
+    delay(10);
+  } while ( (i2c_read_register16(addr, reg) != val) && attempts++<3);
+}
+
 Battery::Battery() {
-  uint16_t status_reg = i2c_read_register16(0x36, 0x00);
+  return;
+  uint16_t status_reg = i2c_read_register16(BATTERY_I2C_ADDR, REG_STATUS);
 
   Serial.printf("0x%x\r\n", status_reg);
 
   if (status_reg & 0x02) { // power on reset (POR) bit is set
     // do setup
 
-    uint16_t fstat_reg = i2c_read_register16(0x36, 0x3D);
-    if (fstat_reg & 1) { // DNR
-      Serial.println("DNR flag set, skipping");
-    } else {
-      set_model();
-
-      // clear POR bit
-      Serial.println("Clearing POR flag");
-      while (i2c_read_register16(0x36, 0x00) & 0x02) {
-        i2c_write_register16(0x36, 0x00, status_reg & 0xFFFD);
-      }
+    int attempts = 0;
+    while (i2c_read_register16(BATTERY_I2C_ADDR, REG_FSTAT) & 0x01 && (attempts++ < 1000)) {
+      Serial.println("wait1\n");
+      Serial.printf("0x%x\r\n", i2c_read_register16(BATTERY_I2C_ADDR, REG_FSTAT));
+      delay(10);
     }
+
+    set_model();
+
+    // clear POR bit
+    Serial.println("Clearing POR flag");
+    i2c_write_and_verify_register16(BATTERY_I2C_ADDR, REG_STATUS, status_reg & 0xFFFD);
   }
 }
 
 void Battery::set_model() {
   // get hibcfg value
-  uint16_t hibcfg = i2c_read_register16(0x36, 0xBA);
+  uint16_t hibcfg = i2c_read_register16(BATTERY_I2C_ADDR, REG_HIBCFG);
   // wake up (3 steps, per manufacturer reference)
-  i2c_write_register16(0x36, 0x60, 0x0090);
-  i2c_write_register16(0x36, 0xBA, 0x0000);
-  i2c_write_register16(0x36, 0x60, 0x0000);
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_SOFTWAKE, 0x0090);
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_HIBCFG,   0x0000);
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_SOFTWAKE, 0x0000);
 
   // designcap
-  i2c_write_register16(0x36, 0x18, 1000); // 0.5mAh resolution * 500mAh = 1000
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_DESIGNCAP, 1000); // 0.5mAh resolution * 500mAh = 1000
 
   // IchgTerm ; according to datasheet, this is 7.5% of Ireg, which is
   // 1000V/Rreg, which is 500mA, so IchgTerm = 37.5mA. At 156.25 uA
   // resolution, this gives a register value of 240
-  i2c_write_register16(0x36, 0x1E, 240);
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_ICHGTERM, 240);
 
   // Vempty. 2.8V / (1.25mV/16) resolution = 35840
-  i2c_write_register16(0x36, 0x3A, 0xA561);
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_VEMPTY, 0xA561);
 
   // write model
-  i2c_write_register16(0x36, 0xDB, 0x8000);
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_MODELCFG, 0x8000);
+  // wait for refresh bit to clear
+  int attempts = 0;
+  while (i2c_read_register16(BATTERY_I2C_ADDR, REG_MODELCFG) & 0x8000 && (attempts++<1000)) {
+    Serial.println("wait2");
+    delay(10); 
+  }
 
-  i2c_write_register16(0x36, 0xBA, hibcfg);
+  i2c_write_register16(BATTERY_I2C_ADDR, REG_HIBCFG, hibcfg);
 }
 
 uint8_t Battery::get_percent() {
-  uint16_t battery_pct = i2c_read_register16(0x36, 0x06);
+  uint16_t battery_pct = i2c_read_register16(BATTERY_I2C_ADDR, 0x06);
   uint8_t bpct_h = (battery_pct >> 8) & 0xFF;
   return bpct_h;
 }
 
 int Battery::get_voltage_mV() {
-  uint16_t reg = i2c_read_register16(0x36, 0x09);
+  uint16_t reg = i2c_read_register16(BATTERY_I2C_ADDR, 0x09);
   return (reg * 1.25) / 16;
 }
 
 int Battery::get_current_uA() {
-  int16_t reg = i2c_read_register16(0x36, 0x0B);
+  int16_t reg = i2c_read_register16(BATTERY_I2C_ADDR, 0x0B);
   return (reg * 156.25);
 }
 
 int Battery::get_TTE() {
-  uint64_t reg = i2c_read_register16(0x36, 0x11);
+  uint64_t reg = i2c_read_register16(BATTERY_I2C_ADDR, 0x11);
   return (reg * 5.625);
 }
 
 int Battery::get_TTF() {
-  int16_t reg = i2c_read_register16(0x36, 0x20);
+  int16_t reg = i2c_read_register16(BATTERY_I2C_ADDR, 0x20);
   return (reg * 5.625);
 }
 

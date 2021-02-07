@@ -1,5 +1,5 @@
 /*
-  This file is unmodified from the source (sparkfun nrf52840 board variant.cpp)
+  This file is lightly modified from the source (sparkfun nrf52840 board variant.cpp)
 
   Copyright (c) 2014-2015 Arduino LLC.  All right reserved.
   Copyright (c) 2016 Sandeep Mistry All right reserved.
@@ -74,6 +74,9 @@ const uint32_t g_ADigitalPinMap[] = {
 
     // The remaining NFC pin
     9, // D33 is P0.09 (NFC1, exposed only via test point on bottom of board)
+
+    // Things I defined
+    46, // D34 is P1.14
 
     // Thus, there are 34 defined pins
 

@@ -39,7 +39,7 @@ void doit() {
 
   Graphics *gfx = sys->getGraphics();
   RTC *rtc = sys->getRTC();
-  Battery *battery = sys->getBattery();
+  //Battery *battery = sys->getBattery();
 
   gfx->clearBuffer();
 
@@ -62,9 +62,9 @@ void doit() {
   gfx->print(txt);
 
   gfx->setCursor(30, 270);
-  gfx->print("batt: ");
-  gfx->print(battery->get_percent());
-  gfx->print("%");
+  //gfx->print("batt: ");
+  //gfx->print(battery->get_percent());
+  //gfx->print("%");
 
   //gfx->setCursor(30, 290);
 
@@ -97,6 +97,20 @@ void doit() {
   sys->feedWatchdog();
 }
 
+#ifdef EMBEDDED
+#include <Wire.h>
+
+void intcalled() {
+  Serial.println("Interrupt!");
+  Serial.print("Reading interrupt status register: ");
+  Wire.beginTransmission(0x14);
+  Wire.write(0x0F); // INT_STAT0
+  Wire.endTransmission();
+  Wire.requestFrom(0x14, 1);
+  Serial.printf("0x%02x\r\n", Wire.read());
+}
+#endif
+
 void loop() {
 #ifdef EMBEDDED
   // suspendLoop();
@@ -108,27 +122,105 @@ void loop() {
   // /dev/ttyACM0
   if (Serial.available()) {
     switch ((char)Serial.read()) {
-    case '=': {
-      int unixt = Serial.parseInt();
-      rtc->set_unixt(unixt);
-      Serial.println("set time");
-      break;
-    }
-    case 'b': {
-      Serial.println("setting battery model");
-      battery->set_model();
-      Serial.println("set battery model");
-      break;
-    }
-    case 'i': {
-      i2cscan();
-      break;
-    }
-    case 'u': {
-      Serial.println("entering DFU");
-      Serial.flush();
-      enter_dfu();
-    }
+      case '=': {
+        int unixt = Serial.parseInt();
+        rtc->set_unixt(unixt);
+        Serial.println("set time");
+        break;
+      }
+      case 'b': {
+        Serial.println("setting battery model");
+        battery->set_model();
+        Serial.println("set battery model");
+        break;
+      }
+      case 'i': {
+        i2cscan();
+        break;
+      }
+      case 'u': {
+        Serial.println("entering DFU");
+        Serial.flush();
+        enter_dfu();
+        break;
+      }
+      case 'a': {
+        sys->registerIRQ(PIN_ACCELINT1, intcalled, RISING);
+        Serial.println("initializing accelerometer");
+        Serial.flush();
+        Wire.beginTransmission(0x14);
+        Wire.write(0x7E); // CMD
+        Wire.write(0xB6); // soft reset
+        Wire.endTransmission();
+
+        delay(10);
+
+        Wire.beginTransmission(0x14);
+        Wire.write(0x00);
+        Wire.endTransmission();
+        Wire.requestFrom(0x14, 1);
+        uint8_t  chipid = Wire.read();
+        Serial.print("got chip id ");
+        Serial.println(chipid, HEX);
+
+        // Set normal mode
+        Wire.beginTransmission(0x14);
+        Wire.write(0x19); // ACC_CONFIG0
+        Wire.write(0x02); // normal mode
+        Wire.endTransmission();
+
+        // Set osr to 3 (max sample rate)
+        Wire.beginTransmission(0x14);
+        Wire.write(0x1A); // ACC_CONFIG1
+        Wire.write(0x79); // osr high, 200hz
+        Wire.endTransmission();
+
+        // Enable tap detection interrupts
+        Wire.beginTransmission(0x14);
+        Wire.write(0x20); // INT_CONFIG1
+        Wire.write(0x0C); // d_tap_int_en | s_tap_int_en
+        Wire.endTransmission();
+
+        // Map tap interrupt to INT1
+        Wire.beginTransmission(0x14);
+        Wire.write(0x23); // INT12_MAP
+        Wire.write(0x04); // tap_int1
+        Wire.endTransmission();
+
+        // Set interrupts active high
+        Wire.beginTransmission(0x14);
+        Wire.write(0x24); // INT12_IO_CTRL
+        Wire.write(0x22);
+        Wire.endTransmission();
+        break;
+      }
+      case 'x': {
+        pinMode(PIN_ACCELINT1, INPUT);
+        pinMode(PIN_ACCELINT2, INPUT);
+        Serial.print("Interrupt pins: ");
+        Serial.print(digitalRead(PIN_ACCELINT1));
+        Serial.print(" ");
+        Serial.print(digitalRead(PIN_ACCELINT2));
+        Serial.println("");
+
+        Serial.print("Reading interrupt status registers: ");
+        Wire.beginTransmission(0x14);
+        Wire.write(0x0E); // INT_STAT0
+        Wire.endTransmission();
+        Wire.requestFrom(0x14, 3);
+        Serial.printf("0x%02x, 0x%02x 0x%02x\r\n", Wire.read(), Wire.read(), Wire.read());
+
+        Serial.print("Config registers: ");
+        Wire.beginTransmission(0x14);
+        Wire.write(0x1F); // INT_CONFIG0
+        Wire.endTransmission();
+        Wire.requestFrom(0x14, 6);
+        for(int i =0; i < 6; i++) {
+          Serial.printf("0x%02x ", Wire.read());
+        }
+        Serial.println();
+        break;
+      }
     }
   }
   delay(100);

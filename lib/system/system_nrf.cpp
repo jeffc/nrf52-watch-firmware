@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#include "accel.h"
 #include "battery.h"
 #include "pins.h"
 #include "system.h"
@@ -16,6 +17,11 @@ void backlight_pin5() {
     digitalWrite(PIN_BACKLIGHT, HIGH);
   }
 }
+
+void double_tapped() {
+  digitalToggle(PIN_BACKLIGHT);
+}
+
 
 System::System() {
   // set up core system
@@ -42,6 +48,11 @@ System::System() {
   pinMode(PIN_BUZZER, OUTPUT);
   digitalWrite(PIN_BUZZER, LOW);
 
+  _gfx = new Graphics();
+  _rtc = new RTC();
+  _battery = new Battery();
+  _accel = new Accelerometer();
+
   // attachInterrupt(PIN_SQW, doSomething, CHANGE);
   // i2cterm_setup();
   pinMode(PIN_BUTTON1, INPUT_PULLUP);
@@ -51,13 +62,11 @@ System::System() {
   pinMode(PIN_BUTTON5, INPUT_PULLUP);
 
   pinMode(PIN_CHG, INPUT_PULLUP);
+  pinMode(PIN_ACCELINT1, INPUT);
 
   attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
   attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
-
-  _gfx = new Graphics();
-  _rtc = new RTC();
-  _battery = new Battery();
+  registerIRQ(PIN_ACCELINT1, double_tapped, RISING);
 }
 
 void System::registerIRQ(int pinnum, void (*fn)(), int mode) {

@@ -3,6 +3,7 @@
 
 #include <battery.h>
 #include <graphics.h>
+#include <accel.h>
 #include <rtc.h>
 #include <mutex>
 #include <set>
@@ -46,6 +47,7 @@ private:
   Graphics *_gfx;
   RTC *_rtc;
   Battery *_battery;
+  Accelerometer *_accel;
 };
 
 #endif

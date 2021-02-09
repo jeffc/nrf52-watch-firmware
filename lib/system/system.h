@@ -2,6 +2,7 @@
 #define _SYSTEM_H_
 
 #include <battery.h>
+#include <backlight.h>
 #include <graphics.h>
 #include <accel.h>
 #include <rtc.h>
@@ -26,6 +27,7 @@ public:
   Graphics *getGraphics();
   RTC *getRTC();
   Battery *getBattery();
+  Backlight *getBacklight();
 
   bool getButtonPressed(int pin);
 
@@ -48,6 +50,7 @@ private:
   RTC *_rtc;
   Battery *_battery;
   Accelerometer *_accel;
+  Backlight *_backlight;
 };
 
 #endif

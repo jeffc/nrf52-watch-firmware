@@ -4,6 +4,7 @@
 #include <Wire.h>
 
 #include "accel.h"
+#include "backlight.h"
 #include "battery.h"
 #include "pins.h"
 #include "system.h"
@@ -18,14 +19,20 @@ void backlight_pin5() {
   }
 }
 
+// global hack for interrupts
+
+static System *sys = NULL;
+
 void double_tapped() {
-  digitalToggle(PIN_BACKLIGHT);
+  sys->getBacklight()->enableFor(1500);
 }
 
 
 System::System() {
   // set up core system
   Serial.begin(115200);
+  sys = this;
+
   Wire.begin();
 
   // set up watchdog
@@ -52,6 +59,7 @@ System::System() {
   _rtc = new RTC();
   _battery = new Battery();
   _accel = new Accelerometer();
+  _backlight = new Backlight();
 
   // attachInterrupt(PIN_SQW, doSomething, CHANGE);
   // i2cterm_setup();
@@ -61,7 +69,7 @@ System::System() {
   pinMode(PIN_BUTTON4, INPUT_PULLUP);
   pinMode(PIN_BUTTON5, INPUT_PULLUP);
 
-  pinMode(PIN_CHG, INPUT_PULLUP);
+  pinMode(PIN_CHG, INPUT);
   pinMode(PIN_ACCELINT1, INPUT);
 
   attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
@@ -84,5 +92,7 @@ Graphics *System::getGraphics() { return _gfx; }
 RTC *System::getRTC() { return _rtc; }
 
 Battery *System::getBattery() { return _battery; }
+
+Backlight *System::getBacklight() { return _backlight; }
 
 #endif

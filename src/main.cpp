@@ -1,7 +1,9 @@
 #include "pins.h"
 
 #include "battery.h"
+#include "backlight.h"
 #include "graphics.h"
+#include "backlight.h"
 #include "rtc.h"
 #include "system.h"
 #include "util.h"
@@ -19,7 +21,7 @@ void enter_dfu_if_btns15() {
   if (sys->getButtonPressed(PIN_BUTTON1) && sys->getButtonPressed(PIN_BUTTON5)) {
     gfx->clearBuffer();
     gfx->setCursor(20, 100);
-    gfx->printf("Device\nUpdate\nMode");
+    gfx->printf("Device\n  Update\n  Mode");
     gfx->refresh();
     enter_dfu();
   }
@@ -61,36 +63,14 @@ void doit() {
   gfx->printf("%04d-%02d-%02d", now.year, now.month, now.day);
   gfx->print(txt);
 
-  gfx->setCursor(30, 270);
+  gfx->setCursor(25, 270);
   gfx->print("batt: ");
   gfx->print(battery->get_percent());
-  gfx->print("%");
+  gfx->print("%/");
+  gfx->printf("%.1fV", (float)(battery->get_voltage_mV())/1000);
 
   //gfx->setCursor(30, 290);
-
-  //if (battery->get_current_uA() < 0) {
-  //  int tte = battery->get_TTE();
-  //  int totalmins = tte / 60;
-  //  if (totalmins > 5760) {
-  //    gfx->printf("> 4 days left");
-  //  } else {
-  //    if (totalmins >= (24 * 60)) {
-  //      gfx->printf("%d:%02d:%02d left", totalmins / (24 * 60),
-  //                  (totalmins % (24 * 60)) / 60, totalmins % 60);
-  //    } else {
-  //      gfx->printf("%d:%02d left", totalmins / 60, totalmins % 60);
-  //    }
-  //  }
-  //} else {
-  //  int ttf = battery->get_TTF();
-  //  int totalmins = ttf / 60;
-  //  if (totalmins > 0) {
-  //    gfx->printf("%d:%02d to full", totalmins / 60, totalmins % 60);
-  //  } else {
-  //    gfx->printf("fully charged");
-  //  }
-  //}
-  gfx->print(txt);
+  //gfx->printf("%fuA", (float)(battery->get_current_uA()));
 
   gfx->refresh();
 
@@ -104,6 +84,7 @@ void loop() {
 #ifdef EMBEDDED
   RTC *rtc = sys->getRTC();
   Battery *battery = sys->getBattery();
+  Backlight *backlight = sys->getBacklight();
   // set time with bash command: echo "=$((`date +%s` - (4*3600)))" >
   // /dev/ttyACM0
   if (Serial.available()) {
@@ -128,6 +109,10 @@ void loop() {
         Serial.println("entering DFU");
         Serial.flush();
         enter_dfu();
+        break;
+      }
+      case 's': {
+        backlight->enableFor(1000);
         break;
       }
     }

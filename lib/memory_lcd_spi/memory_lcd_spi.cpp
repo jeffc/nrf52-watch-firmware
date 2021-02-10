@@ -26,7 +26,7 @@ All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
 #ifdef EMBEDDED
 
-#include "adafruit_sharpmem.h"
+#include "memory_lcd_spi.h"
 #include <SPI.h>
 
 #ifndef _swap_int16_t
@@ -63,13 +63,8 @@ All text above, and the splash screen must be included in any redistribution
 
  **************************************************************************/
 
-#define SHARPMEM_BIT_WRITECMD (0x80)
 #define SHARPMEM_BIT_VCOM (0x40)
 #define SHARPMEM_BIT_CLEAR (0x20)
-#define TOGGLE_VCOM                                                            \
-  do {                                                                         \
-    _sharpmem_vcom = _sharpmem_vcom ? 0x00 : SHARPMEM_BIT_VCOM;                \
-  } while (0);
 
 // LSB First
 byte *spi_buffer;
@@ -89,33 +84,27 @@ void setupBuffer(uint8_t* buf) {
 /* ************* */
 /* CONSTRUCTORS  */
 /* ************* */
-Adafruit_SharpMem::Adafruit_SharpMem(uint8_t clk, uint8_t mosi, uint8_t ss,
-                                     uint16_t width, uint16_t height,
-                                     uint16_t dummy_x, uint16_t dummy_y)
-    : Adafruit_GFX(width, height) {
-  _clk = clk;
-  _mosi = mosi;
+Memory_LCD_SPI::Memory_LCD_SPI(uint8_t ss)
+    : Adafruit_GFX(230, 303) {
   _ss = ss;
-  _dummyx = dummy_x;
-  _dummyy = dummy_y;
 }
 
-boolean Adafruit_SharpMem::begin(void) {
+boolean Memory_LCD_SPI::begin(void) {
   // Set pin state before direction to make sure they start this way (no
   // glitching)
   digitalWrite(_ss, HIGH);
-  digitalWrite(_clk, LOW);
-  digitalWrite(_mosi, HIGH);
+  digitalWrite(PIN_SPI_SCK, LOW);
+  digitalWrite(PIN_SPI_MOSI, HIGH);
 
   pinMode(_ss, OUTPUT);
-  pinMode(_clk, OUTPUT);
-  pinMode(_mosi, OUTPUT);
+  pinMode(PIN_SPI_SCK, OUTPUT);
+  pinMode(PIN_SPI_MOSI, OUTPUT);
 
 #if defined(USE_FAST_PINIO)
-  clkport = portOutputRegister(digitalPinToPort(_clk));
-  clkpinmask = digitalPinToBitMask(_clk);
-  dataport = portOutputRegister(digitalPinToPort(_mosi));
-  datapinmask = digitalPinToBitMask(_mosi);
+  clkport = portOutputRegister(digitalPinToPort(PIN_SPI_SCK));
+  clkpinmask = digitalPinToBitMask(PIN_SPI_SCK);
+  dataport = portOutputRegister(digitalPinToPort(PIN_SPI_MOSI));
+  datapinmask = digitalPinToBitMask(PIN_SPI_MOSI);
 #endif
 
   // Set the vcom bit to a defined state
@@ -127,106 +116,6 @@ boolean Adafruit_SharpMem::begin(void) {
   setRotation(0);
 
   return true;
-}
-
-/* *************** */
-/* PRIVATE METHODS */
-/* *************** */
-
-/**************************************************************************/
-/*!
-    @brief  Sends a single byte in pseudo-SPI.
-*/
-/**************************************************************************/
-void Adafruit_SharpMem::sendbyte(uint8_t data) {
-  uint8_t i = 0;
-
-  // LCD expects LSB first
-
-#if defined(USE_FAST_PINIO)
-  for (i = 0; i < 8; i++) {
-    // Make sure clock starts low
-    *clkport &= ~clkpinmask;
-    if (data & 0x80)
-      *dataport |= datapinmask;
-    else
-      *dataport &= ~datapinmask;
-
-    // Clock is active high
-    *clkport |= clkpinmask;
-    data <<= 1;
-  }
-  *clkport &= ~clkpinmask;
-#else
-  for (i = 0; i < 8; i++) {
-    // Make sure clock starts low
-    digitalWrite(_clk, LOW);
-    if (data & 0x80)
-      digitalWrite(_mosi, HIGH);
-    else
-      digitalWrite(_mosi, LOW);
-
-    // Clock is active high
-    digitalWrite(_clk, HIGH);
-    data <<= 1;
-  }
-  // Make sure clock ends low
-  digitalWrite(_clk, LOW);
-#endif
-}
-
-void Adafruit_SharpMem::sendNbitLSB(uint16_t data, uint8_t nbits) {
-  uint8_t i = 0;
-
-  // LCD expects LSB first
-  for (i = 0; i < nbits; i++) {
-    // Make sure clock starts low
-    digitalWrite(_clk, LOW);
-    if (data & 0x01)
-      digitalWrite(_mosi, HIGH);
-    else
-      digitalWrite(_mosi, LOW);
-    // Clock is active high
-    digitalWrite(_clk, HIGH);
-    data >>= 1;
-  }
-  // Make sure clock ends low
-  digitalWrite(_clk, LOW);
-}
-
-void Adafruit_SharpMem::sendbyteLSB(uint8_t data) {
-  uint8_t i = 0;
-
-  // LCD expects LSB first
-#if defined(USE_FAST_PINIO)
-  for (i = 0; i < 8; i++) {
-    // Make sure clock starts low
-    *clkport &= ~clkpinmask;
-    if (data & 0x01)
-      *dataport |= datapinmask;
-    else
-      *dataport &= ~datapinmask;
-    // Clock is active high
-    *clkport |= clkpinmask;
-    data >>= 1;
-  }
-  // Make sure clock ends low
-  *clkport &= ~clkpinmask;
-#else
-  for (i = 0; i < 8; i++) {
-    // Make sure clock starts low
-    digitalWrite(_clk, LOW);
-    if (data & 0x01)
-      digitalWrite(_mosi, HIGH);
-    else
-      digitalWrite(_mosi, LOW);
-    // Clock is active high
-    digitalWrite(_clk, HIGH);
-    data >>= 1;
-  }
-  // Make sure clock ends low
-  digitalWrite(_clk, LOW);
-#endif
 }
 
 /* ************** */
@@ -249,7 +138,7 @@ static const uint8_t PROGMEM set[] = {1, 2, 4, 8, 16, 32, 64, 128},
                 The y position (0 based)
 */
 /**************************************************************************/
-void Adafruit_SharpMem::drawPixel(int16_t x, int16_t y, uint16_t color) {
+void Memory_LCD_SPI::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
     return;
 
@@ -287,7 +176,7 @@ void Adafruit_SharpMem::drawPixel(int16_t x, int16_t y, uint16_t color) {
     @return     1 if the pixel is enabled, 0 if disabled
 */
 /**************************************************************************/
-uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y) {
+uint8_t Memory_LCD_SPI::getPixel(uint16_t x, uint16_t y) {
   if ((x >= _width) || (y >= _height))
     return 0; // <0 test not needed, unsigned
 
@@ -314,7 +203,7 @@ uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y) {
     @brief Clears the buffer, but doesn't send anything to the screen
 */
 /**************************************************************************/
-void Adafruit_SharpMem::clearBuffer() {
+void Memory_LCD_SPI::clearBuffer() {
   setupBuffer(spi_buffer);
 }
 
@@ -323,12 +212,14 @@ void Adafruit_SharpMem::clearBuffer() {
     @brief Clears the screen
 */
 /**************************************************************************/
-void Adafruit_SharpMem::clearDisplay() {
+void Memory_LCD_SPI::clearDisplay() {
   setupBuffer(spi_buffer);
   // Send the clear screen command rather than doing a HW refresh (quicker)
   digitalWrite(_ss, HIGH);
-  sendbyte(_sharpmem_vcom | SHARPMEM_BIT_CLEAR);
-  sendbyteLSB(0x00);
+  uint8_t cls[] = {SHARPMEM_BIT_CLEAR, 0x00};
+  SPI.beginTransaction(SPISettings(2e6, LSBFIRST, SPI_MODE0));
+  SPI.transfer(cls, NULL, 2);
+  SPI.endTransaction();
   digitalWrite(_ss, LOW);
 }
 
@@ -337,7 +228,7 @@ void Adafruit_SharpMem::clearDisplay() {
     @brief Renders the contents of the pixel buffer on the LCD
 */
 /**************************************************************************/
-void Adafruit_SharpMem::refresh(void) {
+void Memory_LCD_SPI::refresh(void) {
   digitalWrite(_ss, HIGH);
   SPI.beginTransaction(SPISettings(2e6, LSBFIRST, SPI_MODE0));
   SPI.transfer(spi_buffer, NULL, BUFFER_LEN_BYTES);

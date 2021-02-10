@@ -20,9 +20,9 @@ public:
   void printf(const char *st, ...);
 
 #elif EMBEDDED
-#include <adafruit_sharpmem.h>
+#include <memory_lcd_spi.h>
 
-class Graphics : public Adafruit_SharpMem {
+class Graphics : public Memory_LCD_SPI {
 
 #endif
 

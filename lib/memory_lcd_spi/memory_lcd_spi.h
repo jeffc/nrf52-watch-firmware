@@ -1,3 +1,12 @@
+/***
+ * Hacked up version of the adafruit sharp memory LCD library. Modified to use
+ * hardware SPI to update the display, which is approximately 4x faster (39ms
+ * instead of ~170ms)
+ * 
+ * Values for screen height and width are hard-coded in a few places.
+ *
+ * Original adafruit text follows, per their license:
+ */
 /*********************************************************************
 This is an Arduino library for our Monochrome SHARP Memory Displays
 
@@ -49,11 +58,9 @@ typedef volatile uint8_t RwReg;
 #undef USE_FAST_PINIO
 #endif
 
-class Adafruit_SharpMem : public Adafruit_GFX {
+class Memory_LCD_SPI : public Adafruit_GFX {
 public:
-  Adafruit_SharpMem(uint8_t clk, uint8_t mosi, uint8_t ss, uint16_t w = 96,
-                    uint16_t h = 96, uint16_t dummy_x = 0,
-                    uint16_t dummy_y = 0);
+  Memory_LCD_SPI(uint8_t ss);
   boolean begin();
   void drawPixel(int16_t x, int16_t y, uint16_t color);
   uint8_t getPixel(uint16_t x, uint16_t y);
@@ -62,18 +69,13 @@ public:
   void refresh(void);
 
 private:
-  uint8_t _ss, _clk, _mosi;
-  uint16_t _dummyx, _dummyy;
+  uint8_t _ss;
   uint32_t _sharpmem_vcom;
 
 #ifdef USE_FAST_PINIO
   volatile RwReg *dataport, *clkport;
   uint32_t datapinmask, clkpinmask;
 #endif
-
-  void sendbyte(uint8_t data);
-  void sendbyteLSB(uint8_t data);
-  void sendNbitLSB(uint16_t data, uint8_t nbits);
 };
 
 #endif

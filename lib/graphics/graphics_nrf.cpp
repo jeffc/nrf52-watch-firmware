@@ -4,8 +4,7 @@
 #include <graphics.h>
 
 Graphics::Graphics()
-    : Adafruit_SharpMem(PIN_SPI_SCK, PIN_SPI_MOSI, PIN_LCD_CS, SCREEN_WIDTH,
-                        SCREEN_HEIGHT, 10, 0) { // +10 for dummy pixels
+    : Memory_LCD_SPI(PIN_LCD_CS) {
   begin();
   setRotation(2);
 }

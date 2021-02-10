@@ -1,9 +1,11 @@
-This license applies to the Adafruit_Sharpmem library (this directory)
+This license applies to the library contained in this directory
 
 Software License Agreement (BSD License)
 
-Copyright (c) 2019 Limor Fried for Adafruit Industries
+Base library copyright (c) 2019 Limor Fried for Adafruit Industries
 All rights reserved.
+
+Modifications by Jeff Cooper, 2021
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

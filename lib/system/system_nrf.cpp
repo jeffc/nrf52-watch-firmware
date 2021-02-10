@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <SPI.h>
 
 #include "accel.h"
 #include "backlight.h"
@@ -34,6 +35,7 @@ System::System() {
   sys = this;
 
   Wire.begin();
+  SPI.begin();
 
   // set up watchdog
   // 9830401 = 5 minutes ((val-1)/32768) seconds)

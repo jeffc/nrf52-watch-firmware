@@ -1,3 +1,12 @@
+/***
+ * Hacked up version of the adafruit sharp memory LCD library. Modified to use
+ * hardware SPI to update the display, which is approximately 4x faster (39ms
+ * instead of ~170ms)
+ * 
+ * Values for screen height and width are hard-coded in a few places.
+ *
+ * Original adafruit text follows, per their license:
+ */
 /*********************************************************************
 This is an Arduino library for our Monochrome SHARP Memory Displays
 
@@ -18,6 +27,7 @@ All text above, and the splash screen must be included in any redistribution
 #ifdef EMBEDDED
 
 #include "adafruit_sharpmem.h"
+#include <SPI.h>
 
 #ifndef _swap_int16_t
 #define _swap_int16_t(a, b)                                                    \
@@ -61,7 +71,20 @@ All text above, and the splash screen must be included in any redistribution
     _sharpmem_vcom = _sharpmem_vcom ? 0x00 : SHARPMEM_BIT_VCOM;                \
   } while (0);
 
-byte *sharpmem_buffer;
+// LSB First
+byte *spi_buffer;
+#define BUFFER_LEN_BYTES (((16+240)*303 + 16) / 8 + 2)
+
+void setupBuffer(uint8_t* buf) {
+  memset(buf, 0xFF, BUFFER_LEN_BYTES);
+
+  for (int row = 0; row < 303; row++) {
+    buf[row*32 + 1] = ((row+1) >> 1) & 0xFF;
+    buf[row*32] = ((row+1) % 2) ? 0x80 : 0x00;
+  }
+
+  buf[0] = 0b0000001; // mode bits
+}
 
 /* ************* */
 /* CONSTRUCTORS  */
@@ -98,10 +121,8 @@ boolean Adafruit_SharpMem::begin(void) {
   // Set the vcom bit to a defined state
   _sharpmem_vcom = SHARPMEM_BIT_VCOM;
 
-  sharpmem_buffer = (byte *)malloc(((WIDTH + _dummyx) * HEIGHT) / 8);
-
-  if (!sharpmem_buffer)
-    return false;
+  spi_buffer = (uint8_t*) malloc(((16+240)*303+16)/8);
+  setupBuffer(spi_buffer);
 
   setRotation(0);
 
@@ -248,11 +269,9 @@ void Adafruit_SharpMem::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 
   if (color) {
-    sharpmem_buffer[(y * (WIDTH + _dummyx) + x) / 8] |=
-        pgm_read_byte(&set[x & 7]);
+    spi_buffer[y*32 + 2 + x/8] |= pgm_read_byte(&set[x%8]);
   } else {
-    sharpmem_buffer[(y * (WIDTH + _dummyx) + x) / 8] &=
-        pgm_read_byte(&clr[x & 7]);
+    spi_buffer[y*32 + 2 + x/8] &= pgm_read_byte(&clr[x%8]);
   }
 }
 
@@ -287,10 +306,7 @@ uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y) {
     break;
   }
 
-  return sharpmem_buffer[(y * (WIDTH + _dummyx) + x) / 8] &
-                 pgm_read_byte(&set[x & 7])
-             ? 1
-             : 0;
+  return spi_buffer[y*32 + 2 + x/8] & pgm_read_byte(&set[x%8]);
 }
 
 /**************************************************************************/
@@ -299,7 +315,7 @@ uint8_t Adafruit_SharpMem::getPixel(uint16_t x, uint16_t y) {
 */
 /**************************************************************************/
 void Adafruit_SharpMem::clearBuffer() {
-  memset(sharpmem_buffer, 0xff, ((WIDTH + _dummyx) * HEIGHT) / 8);
+  setupBuffer(spi_buffer);
 }
 
 /**************************************************************************/
@@ -308,12 +324,11 @@ void Adafruit_SharpMem::clearBuffer() {
 */
 /**************************************************************************/
 void Adafruit_SharpMem::clearDisplay() {
-  memset(sharpmem_buffer, 0xff, ((WIDTH + _dummyx) * HEIGHT) / 8);
+  setupBuffer(spi_buffer);
   // Send the clear screen command rather than doing a HW refresh (quicker)
   digitalWrite(_ss, HIGH);
   sendbyte(_sharpmem_vcom | SHARPMEM_BIT_CLEAR);
   sendbyteLSB(0x00);
-  TOGGLE_VCOM;
   digitalWrite(_ss, LOW);
 }
 
@@ -323,35 +338,12 @@ void Adafruit_SharpMem::clearDisplay() {
 */
 /**************************************************************************/
 void Adafruit_SharpMem::refresh(void) {
-  uint16_t i, totalbytes, currentline, oldline;
-  totalbytes = ((WIDTH + _dummyx) * HEIGHT) / 8;
-
-  // Send the write command
   digitalWrite(_ss, HIGH);
-  sendbyte(SHARPMEM_BIT_WRITECMD | _sharpmem_vcom);
-  TOGGLE_VCOM;
-
-  // Send the address for line 1
-  oldline = currentline = 1;
-  sendbyteLSB(currentline);
-
-  // Send image buffer
-  for (i = 0; i < totalbytes; i++) {
-    sendbyteLSB(sharpmem_buffer[i]);
-    currentline = ((i + 1) / ((WIDTH + _dummyx) / 8)) + 1;
-    if (currentline != oldline) {
-      // sendNbitLSB(0x00, 8);
-      // Send end of line and address bytes
-      sendNbitLSB(0x00, 7);
-      if (currentline <= HEIGHT) {
-        sendNbitLSB(currentline, 9);
-      }
-      oldline = currentline;
-    }
-  }
-
-  // Send another trailing 8 bits for the last line
-  sendbyteLSB(0x00);
+  SPI.beginTransaction(SPISettings(2e6, LSBFIRST, SPI_MODE0));
+  SPI.transfer(spi_buffer, NULL, BUFFER_LEN_BYTES);
+  SPI.endTransaction();
   digitalWrite(_ss, LOW);
+
+
 }
 #endif

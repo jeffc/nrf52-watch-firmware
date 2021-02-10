@@ -111,10 +111,6 @@ void loop() {
         enter_dfu();
         break;
       }
-      case 's': {
-        backlight->enableFor(1000);
-        break;
-      }
     }
   }
   delay(100);

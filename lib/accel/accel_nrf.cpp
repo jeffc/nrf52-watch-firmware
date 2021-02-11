@@ -1,3 +1,5 @@
+#ifdef EMBEDDED
+
 #include "accel.h"
 #include <Wire.h>
 #include <Arduino.h>
@@ -48,3 +50,5 @@ Accelerometer::Accelerometer() {
   Wire.write(BMA400_INT1_ACTIVE_HIGH);
   Wire.endTransmission();
 }
+
+#endif

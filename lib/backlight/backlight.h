@@ -14,7 +14,9 @@ class Backlight {
     void off();
 
   private:
+#ifdef EMBEDDED
     TaskHandle_t handle;
+#endif
 
     // duration is milliseconds cast to a void*
     static void backlightControlCallback(void* duration_ms);

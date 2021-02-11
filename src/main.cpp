@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "pins.h"
 
 #include "battery.h"
@@ -69,8 +70,8 @@ void doit() {
   gfx->print("%/");
   gfx->printf("%.1fV", (float)(battery->get_voltage_mV())/1000);
 
-  //gfx->setCursor(30, 290);
-  //gfx->printf("%fuA", (float)(battery->get_current_uA()));
+  gfx->setCursor(25, 290);
+  //gfx->printf("%d uA", (battery->get_current_uA()));
 
   gfx->refresh();
 

@@ -4,12 +4,12 @@
 #include <Wire.h>
 #include <SPI.h>
 
-#include "accel.h"
-#include "backlight.h"
-#include "battery.h"
+#include "accel/accel.h"
+#include "backlight/backlight.h"
+#include "battery/battery.h"
 #include "pins.h"
-#include "system.h"
-#include "util.h"
+#include "system/system.h"
+#include "util/util.h"
 
 // todo: move to backlight module
 void backlight_pin5() {
@@ -36,6 +36,8 @@ System::System() {
 
   Wire.begin();
   SPI.begin();
+
+  //initBaseView();
 
   // set up watchdog
   // 9830401 = 5 minutes ((val-1)/32768) seconds)

@@ -20,6 +20,7 @@ System::System() {
   _gfx = new Graphics();
   _rtc = new RTC();
   _battery = new Battery();
+  initBaseView();
 }
 
 void System::registerIRQ(int pinnum, void (*fn)(), int mode) {

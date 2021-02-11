@@ -1,13 +1,12 @@
 #include <Arduino.h>
 #include "pins.h"
 
-#include "battery.h"
-#include "backlight.h"
-#include "graphics.h"
-#include "backlight.h"
-#include "rtc.h"
-#include "system.h"
-#include "util.h"
+#include "battery/battery.h"
+#include "backlight/backlight.h"
+#include "graphics/graphics.h"
+#include "rtc/rtc.h"
+#include "system/system.h"
+#include "util/util.h"
 
 #include "stdio.h"
 #include <fonts/Dustfine72pt7b.h>

@@ -1,7 +1,7 @@
 #ifdef EMBEDDED
 
 #include "pins.h"
-#include <graphics.h>
+#include <graphics/graphics.h>
 
 Graphics::Graphics()
     : Memory_LCD_SPI(PIN_LCD_CS) {

@@ -1,13 +1,15 @@
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
 
-#include <battery.h>
-#include <backlight.h>
-#include <graphics.h>
-#include <accel.h>
-#include <rtc.h>
+#include <battery/battery.h>
+#include <backlight/backlight.h>
+#include <graphics/graphics.h>
+#include <accel/accel.h>
+#include <rtc/rtc.h>
 #include <mutex>
 #include <set>
+
+#include <views/views.h>
 
 #ifdef NATIVE
 
@@ -29,6 +31,8 @@ public:
   Battery *getBattery();
   Backlight *getBacklight();
 
+  //View* getActiveView();
+
   bool getButtonPressed(int pin);
 
 #ifdef NATIVE
@@ -46,11 +50,15 @@ public:
 #endif
 
 private:
+
+  void initBaseView();
+
   Graphics *_gfx;
   RTC *_rtc;
   Battery *_battery;
   Accelerometer *_accel;
   Backlight *_backlight;
+  //View *_active_view;
 };
 
 #endif

@@ -31,7 +31,7 @@ public:
   Battery *getBattery();
   Backlight *getBacklight();
 
-  //View* getActiveView();
+  View* getActiveView();
 
   bool getButtonPressed(int pin);
 
@@ -58,7 +58,7 @@ private:
   Battery *_battery;
   Accelerometer *_accel;
   Backlight *_backlight;
-  //View *_active_view;
+  View *_active_view;
 };
 
 #endif

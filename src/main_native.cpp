@@ -1,8 +1,8 @@
 #ifdef NATIVE
 #include <map>
 
-#include "graphics.h"
-#include "system.h"
+#include "graphics/graphics.h"
+#include "system/system.h"
 #include "pins.h"
 
 // these are declared in main.cpp

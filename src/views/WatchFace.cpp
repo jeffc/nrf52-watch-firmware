@@ -36,6 +36,4 @@ void WatchFace::draw() {
 
   gfx->setCursor(25, 290);
   //gfx->printf("%d uA", (battery->get_current_uA()));
-
-  gfx->refresh();
 }

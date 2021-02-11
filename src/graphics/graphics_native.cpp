@@ -1,6 +1,6 @@
 #ifdef NATIVE
 
-#include <graphics.h>
+#include <graphics/graphics.h>
 #include <stdio.h>
 
 Graphics::Graphics()

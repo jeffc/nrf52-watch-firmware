@@ -37,7 +37,7 @@ System::System() {
   Wire.begin();
   SPI.begin();
 
-  //initBaseView();
+  initBaseView();
 
   // set up watchdog
   // 9830401 = 5 minutes ((val-1)/32768) seconds)

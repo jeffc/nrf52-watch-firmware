@@ -39,6 +39,7 @@ void setup() {
 
 void doit() {
 
+  sys->getGraphics()->clearBuffer();
   sys->getActiveView()->draw();
   sys->getGraphics()->refresh();
   sys->feedWatchdog();
@@ -56,6 +57,11 @@ void loop() {
   // /dev/ttyACM0
   if (Serial.available()) {
     switch ((char)Serial.read()) {
+      case 'p': {
+        Serial.println("pong");
+        Serial.flush();
+        break;
+      }
       case '=': {
         int unixt = Serial.parseInt();
         rtc->set_unixt(unixt);
@@ -70,6 +76,12 @@ void loop() {
       }
       case 'i': {
         i2cscan();
+        break;
+      }
+      case 'l': {
+        digitalToggle(PIN_FLASHLIGHT);
+        Serial.println("toggled light");
+        Serial.flush();
         break;
       }
       case 'u': {

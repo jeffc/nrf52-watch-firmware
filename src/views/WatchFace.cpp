@@ -13,22 +13,25 @@ void WatchFace::draw() {
   RTCDateTime now = rtc->now();
 
   gfx->setFont(&Dustfine72pt7b);
-  gfx->setCursor(55, 120);
-  char txt[64] = {'\0'};
+  gfx->setCursor(45, 120);
+  //char txt[64] = {'\0'};
   gfx->setTextColor(0);
-  gfx->printf("%02d%c", now.hour, ((now.second % 2) ? '.' : ' '));
-  gfx->print(txt);
+  //gfx->printf("%02d%c", now.hour, ((now.second % 2) ? '.' : ' '));
+  gfx->printf("%02d", now.hour);
+  //gfx->print(txt);
 
-  gfx->setCursor(55, 220);
+  gfx->setFont(&Dustfine72pt7b);
+  gfx->setCursor(45, 220);
   gfx->printf("%02d", now.minute);
-  gfx->print(txt);
+
+  gfx->setFont(&FreeMonoBold12pt7b);
+  gfx->printf("%02d", now.second);
 
   gfx->setFont(&FreeMonoBold12pt7b);
   gfx->setCursor(30, 250);
   gfx->printf("%04d-%02d-%02d", now.year, now.month, now.day);
-  gfx->print(txt);
 
-  gfx->setCursor(25, 270);
+  gfx->setCursor(15, 270);
   gfx->print("batt: ");
   gfx->print(battery->get_percent());
   gfx->print("%/");

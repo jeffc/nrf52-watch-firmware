@@ -4,6 +4,7 @@
 #include <Wire.h>
 
 #include "util.h"
+#include "pins.h"
 
 void i2cscan() {
   byte error, address;
@@ -41,6 +42,7 @@ void i2cscan() {
 }
 
 void enter_dfu() {
+  digitalWrite(PIN_FLASHLIGHT, LOW);
   NRF_POWER->GPREGRET = DFU_MAGIC_UF2_RESET;
   NVIC_SystemReset();
 }

@@ -20,6 +20,14 @@ void backlight_pin5() {
   }
 }
 
+void flashlight_pin5() {
+  if (digitalRead(PIN_BUTTON5)) {
+    digitalWrite(PIN_FLASHLIGHT, LOW);
+  } else {
+    digitalWrite(PIN_FLASHLIGHT, HIGH);
+  }
+}
+
 // global hack for interrupts
 
 static System *sys = NULL;
@@ -77,7 +85,8 @@ System::System() {
   pinMode(PIN_ACCELINT1, INPUT);
 
   attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
-  attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
+  //attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
+  attachInterrupt(PIN_BUTTON5, flashlight_pin5, CHANGE);
   registerIRQ(PIN_ACCELINT1, double_tapped, RISING);
 }
 

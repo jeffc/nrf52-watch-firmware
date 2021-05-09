@@ -77,6 +77,7 @@ const uint32_t g_ADigitalPinMap[] = {
 
     // Things I defined
     46, // D34 is P1.14
+    43, // D35 is P1.11
 
     // Thus, there are 34 defined pins
 

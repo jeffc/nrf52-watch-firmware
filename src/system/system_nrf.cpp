@@ -51,8 +51,7 @@ System::System() {
   // 9830401 = 5 minutes ((val-1)/32768) seconds)
   // 3932161 = 2 minutes
   NRF_WDT->CONFIG = 0x01; // Configure WDT to run when CPU is asleep
-  NRF_WDT->CRV =
-      3932161; // Timeout set to 120 seconds, timeout[s] = (CRV-1)/32768
+  NRF_WDT->CRV = 3932161; // Timeout set to 120 seconds, timeout[s] = (CRV-1)/32768
   NRF_WDT->RREN = 0x01;     // Enable the RR[0] reload register
   NRF_WDT->TASKS_START = 1; // Start WDT
 
@@ -66,6 +65,9 @@ System::System() {
 
   pinMode(PIN_BUZZER, OUTPUT);
   digitalWrite(PIN_BUZZER, LOW);
+
+  pinMode(PIN_LCD_DISP, OUTPUT);
+  digitalWrite(PIN_LCD_DISP, HIGH);
 
   _gfx = new Graphics();
   _rtc = new RTC();

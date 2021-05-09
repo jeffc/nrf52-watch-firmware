@@ -12,6 +12,7 @@
 
 #define PIN_LCD_CS 4
 //#define PIN_LCD_CS 3
+#define PIN_LCD_DISP 35
 
 #define PIN_SQW 27
 

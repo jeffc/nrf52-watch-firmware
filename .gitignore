@@ -1,3 +1,4 @@
 .pio
 *.sw*
 *__pycache__*
+crash.txt

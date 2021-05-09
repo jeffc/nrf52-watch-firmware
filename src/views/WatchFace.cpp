@@ -2,6 +2,27 @@
 #include "WatchFace.h"
 #include <fonts/Dustfine72pt7b.h>
 #include <fonts/FreeMonoBold12pt7b.h>
+#include <fonts/Org_01.h>
+
+void drawTopBar(System* _sys) {
+  Graphics *gfx = _sys->getGraphics();
+  Battery *battery = _sys->getBattery();
+
+  gfx->fillRect(0, 0, SCREEN_WIDTH, 10, 0);
+  gfx->setTextColor(1);
+  gfx->setCursor(4,8);
+  gfx->setFont(&Org_01);
+  gfx->printf("%d mV", (battery->get_voltage_mV()));
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  char buf[32] = {'\0'};
+  snprintf(buf, sizeof(buf)-1, "%d%%", battery->get_percent());
+  gfx->getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
+  gfx->setCursor(SCREEN_WIDTH - w - 4, 8);
+  gfx->print(buf);
+}
+
 
 void WatchFace::draw() {
   Graphics *gfx = _sys->getGraphics();
@@ -12,6 +33,7 @@ void WatchFace::draw() {
 
   RTCDateTime now = rtc->now();
 
+  gfx->setTextColor(0);
   gfx->setFont(&Dustfine72pt7b);
   gfx->setCursor(45, 120);
   //char txt[64] = {'\0'};
@@ -39,4 +61,6 @@ void WatchFace::draw() {
 
   gfx->setCursor(25, 290);
   //gfx->printf("%d uA", (battery->get_current_uA()));
+  //
+  //drawTopBar(_sys);
 }

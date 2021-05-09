@@ -11,6 +11,32 @@
 #include "system/system.h"
 #include "util/util.h"
 
+// Fault handlers
+// https://www.freertos.org/Debugging-Hard-Faults-On-Cortex-M-Microcontrollers.html
+
+void HardFault_Handler() {
+  enter_dfu();
+}
+
+// docs conflict on what the name for this function should be. FreeRTOS (link
+// above) says MemMang_, but everywhere else says MemoryManagement_. Both to be
+// safe :)
+void MemMang_Handler() {
+  enter_dfu();
+}
+
+void MemoryManagement_Handler() {
+  enter_dfu();
+}
+
+void UsageFault_Handler() {
+  enter_dfu();
+}
+
+void BusFault_Handler() {
+  enter_dfu();
+}
+
 // todo: move to backlight module
 void backlight_pin5() {
   if (digitalRead(PIN_BUTTON5)) {
@@ -48,7 +74,7 @@ System::System() {
   initBaseView();
 
   // set up watchdog
-  // 9830401 = 5 minutes ((val-1)/32768) seconds)
+  // 9830401 = 5 minutes ((val-1)/32768) seconds
   // 3932161 = 2 minutes
   NRF_WDT->CONFIG = 0x01; // Configure WDT to run when CPU is asleep
   NRF_WDT->CRV = 3932161; // Timeout set to 120 seconds, timeout[s] = (CRV-1)/32768

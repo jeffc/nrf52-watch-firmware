@@ -9,3 +9,11 @@ void View::draw() {
 
 void View::update() {
 }
+
+bool View::isDead() {
+  return _is_dead;
+}
+
+void View::exit() {
+  _is_dead = true;
+}

@@ -8,6 +8,7 @@
 #include <rtc/rtc.h>
 #include <mutex>
 #include <set>
+#include <stack>
 
 #include <views/views.h>
 
@@ -32,6 +33,7 @@ public:
   Backlight *getBacklight();
 
   View* getActiveView();
+  void switchToNewView(View* v);
 
   bool getButtonPressed(int pin);
 
@@ -59,6 +61,8 @@ private:
   Accelerometer *_accel;
   Backlight *_backlight;
   View *_active_view;
+
+  std::stack<View*> _view_stack;
 };
 
 #endif

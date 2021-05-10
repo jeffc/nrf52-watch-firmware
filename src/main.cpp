@@ -8,6 +8,8 @@
 #include "system/system.h"
 #include "util/util.h"
 
+#include "views/PopupView.h"
+
 #include "stdio.h"
 #include <fonts/Dustfine72pt7b.h>
 #include <fonts/FreeMonoBold12pt7b.h>
@@ -27,6 +29,10 @@ void enter_dfu_if_btns15() {
   }
 }
 
+void switchView() {
+  sys->switchToNewView(new PopupView(sys));
+}
+
 void setup() {
   sys = new System();
 
@@ -35,6 +41,7 @@ void setup() {
 
   sys->registerIRQ(PIN_SQW, doit, RISING);
   sys->registerIRQ(PIN_BUTTON1, enter_dfu_if_btns15, CHANGE);
+  sys->registerIRQ(PIN_BUTTON5, switchView, RISING);
 }
 
 void doit() {

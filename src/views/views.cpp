@@ -10,6 +10,9 @@ void View::draw() {
 void View::update() {
 }
 
+void View::handleEvent(EVENT_T e) {
+}
+
 bool View::isDead() {
   return _is_dead;
 }

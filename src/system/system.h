@@ -8,7 +8,9 @@
 #include <rtc/rtc.h>
 #include <mutex>
 #include <set>
-#include <stack>
+#include <vector>
+#include <list>
+#include <pins.h>
 
 #include <views/views.h>
 
@@ -36,6 +38,11 @@ public:
   void switchToNewView(View* v);
 
   bool getButtonPressed(int pin);
+  void fireEvent(EVENT_T e);
+
+  void registerEventHandler(void (*handler)(EVENT_T));
+
+  static System* getInstance() {return _INSTANCE;};
 
 #ifdef NATIVE
   // this happens in hardware on the nrf52
@@ -53,7 +60,9 @@ public:
 
 private:
 
-  void initBaseView();
+  void commonSetup();
+  void initViews();
+  void setupButtonEvents();
 
   Graphics *_gfx;
   RTC *_rtc;
@@ -62,7 +71,34 @@ private:
   Backlight *_backlight;
   View *_active_view;
 
-  std::stack<View*> _view_stack;
+  static System* _INSTANCE;
+
+  std::list<View*>* _view_stack;
+  std::vector<void (*)(EVENT_T)> _event_handlers;
 };
+
+/* There's a better way to do this, right? */
+template<int pin, int mode>
+void fireButtonEvent() {
+  EVENT_TYPE_T t;
+  switch (mode) {
+    case FALLING: t = BUTTON_PRESS; break;
+    case RISING:  t = BUTTON_RELEASE; break;
+    case CHANGE:  t = BUTTON_CHANGE; break;
+  }
+
+  BUTTON_T b = BUTTON_TOP; // to prevent unassigned
+  switch (pin) {
+    case PIN_BUTTON1: b = BUTTON_TOP; break;
+    case PIN_BUTTON3: b = BUTTON_MIDDLE; break;
+    case PIN_BUTTON5: b = BUTTON_BOTTOM; break;
+  }
+
+  System* sys = System::getInstance();
+  if (sys) {
+    sys->fireEvent((EVENT_T) { t,  b });
+  }
+};
+
 
 #endif

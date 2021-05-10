@@ -11,6 +11,11 @@
 #include "system/system.h"
 #include "util/util.h"
 
+// global hack for interrupts
+
+static System *sys = NULL;
+
+
 // Fault handlers
 // https://www.freertos.org/Debugging-Hard-Faults-On-Cortex-M-Microcontrollers.html
 
@@ -46,7 +51,7 @@ void backlight_pin5() {
   }
 }
 
-void flashlight_pin5() {
+void flashlight_pin5(EVENT_T e) {
   if (digitalRead(PIN_BUTTON5)) {
     digitalWrite(PIN_FLASHLIGHT, LOW);
   } else {
@@ -54,24 +59,19 @@ void flashlight_pin5() {
   }
 }
 
-// global hack for interrupts
-
-static System *sys = NULL;
-
 void double_tapped() {
   sys->getBacklight()->enableFor(1500);
 }
 
 
 System::System() {
+  commonSetup();
   // set up core system
   Serial.begin(115200);
   sys = this;
 
   Wire.begin();
   SPI.begin();
-
-  initBaseView();
 
   // set up watchdog
   // 9830401 = 5 minutes ((val-1)/32768) seconds
@@ -112,11 +112,12 @@ System::System() {
   pinMode(PIN_CHG, INPUT);
   pinMode(PIN_ACCELINT1, INPUT);
 
-  attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
+  //attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
   //attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
-  attachInterrupt(PIN_BUTTON5, flashlight_pin5, CHANGE);
+  registerEventHandler(flashlight_pin5);
   registerIRQ(PIN_ACCELINT1, double_tapped, RISING);
 }
+      
 
 void System::registerIRQ(int pinnum, void (*fn)(), int mode) {
   attachInterrupt(pinnum, fn, mode);

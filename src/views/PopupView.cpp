@@ -13,3 +13,9 @@ void PopupView::draw() {
   gfx->setTextColor(0);
   gfx->printf(":)");
 }
+
+void PopupView::handleEvent(EVENT_T e) {
+  if (e.type == BUTTON_PRESS && e.button == BUTTON_MIDDLE) {
+    exit();
+  }
+}

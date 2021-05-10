@@ -8,6 +8,7 @@
 #include "system/system.h"
 #include "util/util.h"
 
+#include "views/views.h"
 #include "views/PopupView.h"
 
 #include "stdio.h"
@@ -18,7 +19,7 @@ System *sys;
 
 extern void doit();
 
-void enter_dfu_if_btns15() {
+void enter_dfu_if_btns15(EVENT_T e) {
   Graphics *gfx = sys->getGraphics();
   if (sys->getButtonPressed(PIN_BUTTON1) && sys->getButtonPressed(PIN_BUTTON5)) {
     gfx->clearBuffer();
@@ -29,8 +30,10 @@ void enter_dfu_if_btns15() {
   }
 }
 
-void switchView() {
-  sys->switchToNewView(new PopupView(sys));
+void switchView(EVENT_T e) {
+  if (e.type == BUTTON_PRESS && e.button == BUTTON_BOTTOM) {
+    sys->switchToNewView(new PopupView(sys));
+  }
 }
 
 void setup() {
@@ -40,8 +43,8 @@ void setup() {
   gfx->clearDisplay();
 
   sys->registerIRQ(PIN_SQW, doit, RISING);
-  sys->registerIRQ(PIN_BUTTON1, enter_dfu_if_btns15, CHANGE);
-  sys->registerIRQ(PIN_BUTTON5, switchView, RISING);
+  sys->registerEventHandler(enter_dfu_if_btns15);
+  sys->registerEventHandler(switchView);
 }
 
 void doit() {
@@ -97,6 +100,52 @@ void loop() {
         enter_dfu();
         break;
       }
+      case 'v':
+        Serial.println(__DATE__ " " __TIME__);
+        break;
+      case 'x':
+        sys->fireEvent({BUTTON_PRESS, BUTTON_BOTTOM});
+        break;
+
+      case '1':
+        Serial.println("pressing TOP");
+        sys->fireEvent({BUTTON_PRESS, BUTTON_TOP});
+        sys->fireEvent({BUTTON_CHANGE, BUTTON_TOP});
+        break;
+
+      case '8':
+        Serial.println("releasing TOP");
+        sys->fireEvent({BUTTON_RELEASE, BUTTON_TOP});
+        sys->fireEvent({BUTTON_CHANGE, BUTTON_TOP});
+        break;
+      case '2':
+        Serial.println("pressing MIDDLE");
+        sys->fireEvent({BUTTON_PRESS, BUTTON_MIDDLE});
+        sys->fireEvent({BUTTON_CHANGE, BUTTON_MIDDLE});
+        break;
+
+      case '9':
+        Serial.println("releasing MIDDLE");
+        sys->fireEvent({BUTTON_RELEASE, BUTTON_MIDDLE});
+        sys->fireEvent({BUTTON_CHANGE, BUTTON_MIDDLE});
+        break;
+
+      case '3':
+        Serial.println("pressing BOTTOM");
+        sys->fireEvent({BUTTON_PRESS, BUTTON_BOTTOM});
+        sys->fireEvent({BUTTON_CHANGE, BUTTON_BOTTOM});
+        break;
+
+      case '0':
+        Serial.println("releasing BOTTOM");
+        sys->fireEvent({BUTTON_RELEASE, BUTTON_BOTTOM});
+        sys->fireEvent({BUTTON_CHANGE, BUTTON_BOTTOM});
+        break;
+
+      case 't':
+        Serial.println("Manually calling doit()");
+        doit();
+        break;
     }
   }
   delay(100);

@@ -8,6 +8,7 @@ class PopupView : public View {
   public:
     using View::View;
     void draw();
+    void handleEvent(EVENT_T e);
 };
 
 #endif

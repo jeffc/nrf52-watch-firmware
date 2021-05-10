@@ -14,12 +14,32 @@
 
 class System;
 
+enum EVENT_TYPE_T {
+  BUTTON_PRESS,
+  BUTTON_RELEASE,
+  BUTTON_CHANGE,
+};
+
+enum BUTTON_T {
+  BUTTON_TOP,
+  BUTTON_MIDDLE,
+  BUTTON_BOTTOM,
+};
+
+struct EVENT_T {
+  EVENT_TYPE_T type;
+  union {
+    BUTTON_T button;
+  };
+};
+
 class View {
   public:
     View(System* s);
 
     virtual void draw();
     virtual void update();
+    virtual void handleEvent(EVENT_T e);
 
     bool isDead();
   
@@ -28,6 +48,5 @@ class View {
     bool _is_dead = false;
     void exit();
 };    
-
 
 #endif

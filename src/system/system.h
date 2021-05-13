@@ -78,25 +78,16 @@ private:
 };
 
 /* There's a better way to do this, right? */
-template<int pin, int mode>
-void fireButtonEvent() {
-  EVENT_TYPE_T t;
-  switch (mode) {
-    case FALLING: t = BUTTON_PRESS; break;
-    case RISING:  t = BUTTON_RELEASE; break;
-    case CHANGE:  t = BUTTON_CHANGE; break;
-  }
-
-  BUTTON_T b = BUTTON_TOP; // to prevent unassigned
-  switch (pin) {
-    case PIN_BUTTON1: b = BUTTON_TOP; break;
-    case PIN_BUTTON3: b = BUTTON_MIDDLE; break;
-    case PIN_BUTTON5: b = BUTTON_BOTTOM; break;
-  }
-
+template<int pin, BUTTON_T b>
+void fireButtonEvents() {
   System* sys = System::getInstance();
   if (sys) {
-    sys->fireEvent((EVENT_T) { t,  b });
+    if (sys->getButtonPressed(pin)) {
+      sys->fireEvent((EVENT_T) { BUTTON_PRESS,  b });
+    } else {
+      sys->fireEvent((EVENT_T) { BUTTON_RELEASE,  b });
+    }
+    sys->fireEvent((EVENT_T) { BUTTON_CHANGE,  b });
   }
 };
 

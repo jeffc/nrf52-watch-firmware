@@ -16,17 +16,9 @@ void System::commonSetup() {
 }
 
 void System::setupButtonEvents() {
-  registerIRQ(PIN_BUTTON1, fireButtonEvent<BUTTON_TOP, RISING>, RISING);
-  registerIRQ(PIN_BUTTON1, fireButtonEvent<BUTTON_TOP, FALLING>, FALLING);
-  registerIRQ(PIN_BUTTON1, fireButtonEvent<BUTTON_TOP, CHANGE>, CHANGE);
-
-  registerIRQ(PIN_BUTTON3, fireButtonEvent<BUTTON_MIDDLE, RISING>, RISING);
-  registerIRQ(PIN_BUTTON3, fireButtonEvent<BUTTON_MIDDLE, FALLING>, FALLING);
-  registerIRQ(PIN_BUTTON3, fireButtonEvent<BUTTON_MIDDLE, CHANGE>, CHANGE);
-
-  registerIRQ(PIN_BUTTON5, fireButtonEvent<BUTTON_BOTTOM, RISING>, RISING);
-  registerIRQ(PIN_BUTTON5, fireButtonEvent<BUTTON_BOTTOM, FALLING>, FALLING);
-  registerIRQ(PIN_BUTTON5, fireButtonEvent<BUTTON_BOTTOM, CHANGE>, CHANGE);
+  registerIRQ(PIN_BUTTON1, fireButtonEvents<PIN_BUTTON1, BUTTON_TOP>, CHANGE);
+  registerIRQ(PIN_BUTTON3, fireButtonEvents<PIN_BUTTON3, BUTTON_MIDDLE>, CHANGE);
+  registerIRQ(PIN_BUTTON5, fireButtonEvents<PIN_BUTTON5, BUTTON_BOTTOM>, CHANGE);
 }
 
 // force-clears the view stack

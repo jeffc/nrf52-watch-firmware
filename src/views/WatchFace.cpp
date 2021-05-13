@@ -2,8 +2,7 @@
 #include "WatchFace.h"
 #include <fonts/Dustfine72pt7b.h>
 #include <fonts/FreeMonoBold12pt7b.h>
-#include <fonts/Org_01.h>
-
+/*
 void drawTopBar(System* _sys) {
   Graphics *gfx = _sys->getGraphics();
   Battery *battery = _sys->getBattery();
@@ -22,6 +21,7 @@ void drawTopBar(System* _sys) {
   gfx->setCursor(SCREEN_WIDTH - w - 4, 8);
   gfx->print(buf);
 }
+*/
 
 
 void WatchFace::draw() {

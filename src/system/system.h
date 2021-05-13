@@ -6,7 +6,6 @@
 #include <graphics/graphics.h>
 #include <accel/accel.h>
 #include <rtc/rtc.h>
-#include <mutex>
 #include <set>
 #include <vector>
 #include <list>
@@ -15,7 +14,7 @@
 #include <views/views.h>
 
 #ifdef NATIVE
-
+#include <mutex>
 #define RISING 1
 #define FALLING 2
 #define CHANGE 3
@@ -43,6 +42,8 @@ public:
   void registerEventHandler(void (*handler)(EVENT_T));
 
   static System* getInstance() {return _INSTANCE;};
+
+  void refreshDisplay();
 
 #ifdef NATIVE
   // this happens in hardware on the nrf52
@@ -74,6 +75,7 @@ private:
   static System* _INSTANCE;
 
   std::list<View*>* _view_stack;
+  std::list<View*>* _views_to_clean_up;
   std::vector<void (*)(EVENT_T)> _event_handlers;
 };
 

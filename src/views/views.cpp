@@ -1,3 +1,4 @@
+#include "system/system.h"
 #include "views/views.h"
 
 View::View(System* s) {
@@ -19,4 +20,5 @@ bool View::isDead() {
 
 void View::exit() {
   _is_dead = true;
+  _sys->refreshDisplay();
 }

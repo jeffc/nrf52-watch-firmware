@@ -2,6 +2,7 @@
 #include "WatchFace.h"
 #include <fonts/Dustfine72pt7b.h>
 #include <fonts/FreeMonoBold12pt7b.h>
+#include "views/PopupView.h"
 /*
 void drawTopBar(System* _sys) {
   Graphics *gfx = _sys->getGraphics();
@@ -63,4 +64,10 @@ void WatchFace::draw() {
   //gfx->printf("%d uA", (battery->get_current_uA()));
   //
   //drawTopBar(_sys);
+}
+
+void WatchFace::handleEvent(EVENT_T e) {
+  if (e.type == BUTTON_PRESS && e.button == BUTTON_BOTTOM) {
+    _sys->switchToNewView(new PopupView(_sys));
+  }
 }

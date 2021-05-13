@@ -30,12 +30,6 @@ void enter_dfu_if_btns15(EVENT_T e) {
   }
 }
 
-void switchView(EVENT_T e) {
-  if (e.type == BUTTON_PRESS && e.button == BUTTON_BOTTOM) {
-    sys->switchToNewView(new PopupView(sys));
-  }
-}
-
 void setup() {
   sys = new System();
 
@@ -44,14 +38,10 @@ void setup() {
 
   sys->registerIRQ(PIN_SQW, doit, RISING);
   sys->registerEventHandler(enter_dfu_if_btns15);
-  sys->registerEventHandler(switchView);
 }
 
 void doit() {
-
-  sys->getGraphics()->clearBuffer();
-  sys->getActiveView()->draw();
-  sys->getGraphics()->refresh();
+  sys->refreshDisplay();
   sys->feedWatchdog();
 }
 

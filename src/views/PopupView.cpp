@@ -15,7 +15,7 @@ void PopupView::draw() {
 }
 
 void PopupView::handleEvent(EVENT_T e) {
-  if (e.type == BUTTON_PRESS && e.button == BUTTON_MIDDLE) {
+  if (e.type == BUTTON_PRESS && e.button == BUTTON_TOP) {
     exit();
   }
 }

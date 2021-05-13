@@ -1,3 +1,7 @@
+#include <Arduino.h>
+#include <Adafruit_GFX.h>
+#include "fonts/Dustfine72pt7b.h"
+
 const uint8_t Dustfine72pt7bBitmaps[] PROGMEM = {
     0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -5488,9 +5492,5 @@ const GFXglyph Dustfine72pt7bGlyphs[] PROGMEM = {
     {63334, 28, 97, 34, 0, -96},   // 0x7C '|'
     {63674, 62, 111, 69, 0, -103}, // 0x7D '}'
     {64535, 48, 28, 55, 0, -62}};  // 0x7E '~'
-
-const GFXfont Dustfine72pt7b PROGMEM = {(uint8_t *)Dustfine72pt7bBitmaps,
-                                        (GFXglyph *)Dustfine72pt7bGlyphs, 0x20,
-                                        0x7E, 162};
 
 // Approx. 65375 bytes

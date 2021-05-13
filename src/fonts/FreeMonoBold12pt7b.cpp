@@ -1,3 +1,5 @@
+#include "fonts/FreeMonoBold12pt7b.h"
+
 const uint8_t FreeMonoBold12pt7bBitmaps[] PROGMEM = {
     0xFF, 0xFF, 0xFF, 0xF6, 0x66, 0x60, 0x6F, 0x60, 0xE7, 0xE7, 0x62, 0x42,
     0x42, 0x42, 0x42, 0x11, 0x87, 0x30, 0xC6, 0x18, 0xC3, 0x31, 0xFF, 0xFF,
@@ -241,9 +243,5 @@ const GFXglyph FreeMonoBold12pt7bGlyphs[] PROGMEM = {
     {1702, 2, 19, 14, 6, -14},  // 0x7C '|'
     {1707, 7, 19, 14, 4, -14},  // 0x7D '}'
     {1724, 12, 4, 14, 1, -7}};  // 0x7E '~'
-
-const GFXfont FreeMonoBold12pt7b PROGMEM = {
-    (uint8_t *)FreeMonoBold12pt7bBitmaps, (GFXglyph *)FreeMonoBold12pt7bGlyphs,
-    0x20, 0x7E, 24};
 
 // Approx. 2402 bytes

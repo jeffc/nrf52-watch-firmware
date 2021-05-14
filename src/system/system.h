@@ -34,6 +34,7 @@ public:
   GPIO *getBacklight();
   GPIO *getFlashlight();
   GPIO *get5Vreg();
+  GPIO *getBuzzer();
 
   View* getActiveView();
   void switchToNewView(View* v);
@@ -74,6 +75,7 @@ private:
   GPIO *_backlight;
   GPIO *_flashlight;
   GPIO *_5Vreg;
+  GPIO *_buzzer;
 
   static System* _INSTANCE;
 

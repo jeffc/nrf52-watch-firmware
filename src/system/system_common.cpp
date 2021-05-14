@@ -19,6 +19,7 @@ void System::commonSetup() {
   _backlight = new GPIO(PIN_BACKLIGHT);
   _flashlight = new GPIO(PIN_FLASHLIGHT);
   _5Vreg = new GPIO(PIN_5VREG);
+  _buzzer = new GPIO(PIN_BUZZER);
 
   _event_handlers = std::vector<void(*)(EVENT_T)>();
   initViews();
@@ -95,4 +96,5 @@ Battery *System::getBattery() { return _battery; }
 GPIO *System::getBacklight() { return _backlight; }
 GPIO *System::getFlashlight() { return _flashlight; }
 GPIO *System::get5Vreg() { return _5Vreg; }
+GPIO *System::getBuzzer() { return _buzzer; }
 

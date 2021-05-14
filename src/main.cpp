@@ -37,7 +37,7 @@ void setup() {
   gfx->clearDisplay();
 
   sys->registerIRQ(PIN_SQW, doit, RISING);
-  sys->registerEventHandler(enter_dfu_if_btns15);
+  //sys->registerEventHandler(enter_dfu_if_btns15);
 }
 
 void doit() {

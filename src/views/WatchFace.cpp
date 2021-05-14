@@ -1,5 +1,6 @@
 #include "WatchFace.h"
 #include "Menu.h"
+#include "util/util.h"
 
 #include <fonts/Dustfine72pt7b.h>
 #include <fonts/FreeMonoBold12pt7b.h>
@@ -71,15 +72,24 @@ void WatchFace::draw() {
   //drawTopBar(_sys);
 }
 
-// for testing
-static int lbl = 0;
-
 void WatchFace::handleEvent(EVENT_T e) {
-  //if (e.type == BUTTON_CHANGE && e.button == BUTTON_MIDDLE) {
+  // flashlight
+  if (e.type == BUTTON_CHANGE && e.button == BUTTON_MIDDLE) {
+    if (_sys->getButtonPressed(PIN_BUTTON5)) {
+      _sys->getFlashlight()->on();
+    } else {
+      _sys->getFlashlight()->off();
+    }
+  }
+
   if (e.type == BUTTON_PRESS && e.button == BUTTON_BOTTOM) {
     Menu* menu = new Menu(_sys);
-    menu->addItem([&]() { return "label " + std::to_string(lbl);}, []() { lbl++; return false; });
-    menu->addItem("label 2", []() { lbl = 0; return true; });
+    menu->addItem([&]() { return std::string((_sys->getBacklight()->isOn()) ? "disable" : "enable") + " backlight";}, [&]() { _sys->getBacklight()->toggle(); return false; });
+    menu->addItem([&]() { return std::string((_sys->get5Vreg()->isOn()) ? "disable" : "enable") + " 5v reg";}, [&]() { _sys->get5Vreg()->toggle(); return false; });
+    menu->addItem([&]() { return std::string((_sys->getFlashlight()->isOn()) ? "disable" : "enable") + " flashlight";}, [&]() { _sys->getFlashlight()->toggle(); return false; });
+    menu->addItem("", []() { return false; }); // spacer
+    menu->addItem("Update Mode", [&]() { _sys->getFlashlight()->off(); enter_dfu(); return false; });
+    menu->addItem("back", []() { return true; });
     _sys->switchToNewView(menu);
   }
 }

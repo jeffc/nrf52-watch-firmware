@@ -32,6 +32,8 @@ public:
   RTC *getRTC();
   Battery *getBattery();
   GPIO *getBacklight();
+  GPIO *getFlashlight();
+  GPIO *get5Vreg();
 
   View* getActiveView();
   void switchToNewView(View* v);
@@ -70,6 +72,8 @@ private:
   Battery *_battery;
   Accelerometer *_accel;
   GPIO *_backlight;
+  GPIO *_flashlight;
+  GPIO *_5Vreg;
 
   static System* _INSTANCE;
 

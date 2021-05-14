@@ -17,6 +17,8 @@ void System::commonSetup() {
   _battery = new Battery();
   _accel = new Accelerometer();
   _backlight = new GPIO(PIN_BACKLIGHT);
+  _flashlight = new GPIO(PIN_FLASHLIGHT);
+  _5Vreg = new GPIO(PIN_5VREG);
 
   _event_handlers = std::vector<void(*)(EVENT_T)>();
   initViews();
@@ -87,5 +89,10 @@ void System::refreshDisplay() {
   getGraphics()->refresh();
 }
 
-
+Graphics *System::getGraphics() { return _gfx; }
+RTC *System::getRTC() { return _rtc; }
+Battery *System::getBattery() { return _battery; }
+GPIO *System::getBacklight() { return _backlight; }
+GPIO *System::getFlashlight() { return _flashlight; }
+GPIO *System::get5Vreg() { return _5Vreg; }
 

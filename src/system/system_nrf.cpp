@@ -42,23 +42,6 @@ void BusFault_Handler() {
   enter_dfu();
 }
 
-// todo: move to backlight module
-void backlight_pin5() {
-  if (digitalRead(PIN_BUTTON5)) {
-    digitalWrite(PIN_BACKLIGHT, LOW);
-  } else {
-    digitalWrite(PIN_BACKLIGHT, HIGH);
-  }
-}
-
-void flashlight_pin5(EVENT_T e) {
-  if (digitalRead(PIN_BUTTON5)) {
-    digitalWrite(PIN_FLASHLIGHT, LOW);
-  } else {
-    digitalWrite(PIN_FLASHLIGHT, HIGH);
-  }
-}
-
 void double_tapped() {
   sys->getBacklight()->enableFor(1500);
 }
@@ -109,7 +92,6 @@ System::System() {
 
   //attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
   //attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
-  registerEventHandler(flashlight_pin5);
   registerIRQ(PIN_ACCELINT1, double_tapped, RISING);
 }
       
@@ -123,13 +105,5 @@ bool System::getButtonPressed(int pin) {
 }
 
 void System::feedWatchdog() { NRF_WDT->RR[0] = WDT_RR_RR_Reload; }
-
-Graphics *System::getGraphics() { return _gfx; }
-
-RTC *System::getRTC() { return _rtc; }
-
-Battery *System::getBattery() { return _battery; }
-
-GPIO *System::getBacklight() { return _backlight; }
 
 #endif

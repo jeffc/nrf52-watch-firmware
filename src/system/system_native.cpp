@@ -42,12 +42,6 @@ void System::fireIRQ(int pin, int mode) {
 
 void System::feedWatchdog() {}
 
-Graphics *System::getGraphics() { return _gfx; }
-
-RTC *System::getRTC() { return _rtc; }
-
-Battery *System::getBattery() { return _battery; }
-
 bool System::getButtonPressed(int pin) {
   return (System::buttonsPressed.count(pin) > 0);
 }

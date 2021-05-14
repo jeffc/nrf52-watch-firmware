@@ -10,6 +10,7 @@
 GPIO::GPIO(int pin) {
   handle = NULL;
   _pin = pin;
+  _is_on = false;
 }
 
 void GPIO::enableFor(unsigned ms) {
@@ -31,10 +32,12 @@ void GPIO::enableFor(unsigned ms) {
 
 void GPIO::on() {
   digitalWrite(_pin, HIGH);
+  _is_on = true;
 }
 
 void GPIO::off() {
   digitalWrite(_pin, LOW);
+  _is_on = false;
 }
 
 #endif

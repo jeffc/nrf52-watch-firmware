@@ -22,6 +22,8 @@
 
 #define PIN_CHG 33
 
+#define PIN_5VREG 10
+
 #define PIN_ACCELINT1 34
 #define PIN_ACCELINT2 19
 

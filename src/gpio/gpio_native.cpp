@@ -7,6 +7,7 @@
 
 GPIO::GPIO(int pin) {
   _pin = pin;
+  _is_on = false;
 }
 
 void GPIO::enableFor(unsigned ms) {
@@ -15,10 +16,12 @@ void GPIO::enableFor(unsigned ms) {
 
 void GPIO::on() {
   std::cout << "pretending to enable pin " << _pin << std::endl;
+  _is_on = true;
 }
 
 void GPIO::off() {
   std::cout << "pretending to disable pin " << _pin << std::endl;
+  _is_on = false;
 }
 
 #endif

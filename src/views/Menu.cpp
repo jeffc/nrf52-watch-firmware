@@ -1,20 +1,24 @@
 #include "views/Menu.h"
 #include "system/system.h"
-#include <fonts/FreeMonoBold12pt7b.h>
+#include <fonts/small_pixel8pt7b.h>
 #include <iostream>
 #include <cassert>
 
 void Menu::draw() {
   Graphics *gfx = _sys->getGraphics();
-  gfx->setFont(&FreeMonoBold12pt7b);
+  gfx->setTextWrap(false);
+  gfx->setFont(&small_pixel8pt7b);
   gfx->clearBuffer();
-  gfx->setCursor(30, 30);
 
   gfx->setTextColor(0);
 
   for (int i = 0; i < _items.size(); i++) {
+    if (i == _pos) {
+      gfx->setCursor(20, 30+20*i);
+      gfx->print(">");
+    }
     gfx->setCursor(30, 30+20*i);
-    gfx->printf("[%c] %s\n", (i == _pos) ? 'x' : ' ',  _items[i].first().c_str());
+    gfx->printf("%s\n", _items[i].first().c_str());
   }
 }
 

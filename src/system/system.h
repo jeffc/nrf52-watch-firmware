@@ -2,7 +2,7 @@
 #define _SYSTEM_H_
 
 #include <battery/battery.h>
-#include <backlight/backlight.h>
+#include <gpio/gpio.h>
 #include <graphics/graphics.h>
 #include <accel/accel.h>
 #include <rtc/rtc.h>
@@ -31,7 +31,7 @@ public:
   Graphics *getGraphics();
   RTC *getRTC();
   Battery *getBattery();
-  Backlight *getBacklight();
+  GPIO *getBacklight();
 
   View* getActiveView();
   void switchToNewView(View* v);
@@ -69,13 +69,11 @@ private:
   RTC *_rtc;
   Battery *_battery;
   Accelerometer *_accel;
-  Backlight *_backlight;
-  View *_active_view;
+  GPIO *_backlight;
 
   static System* _INSTANCE;
 
   std::list<View*>* _view_stack;
-  std::list<View*>* _views_to_clean_up;
   std::vector<void (*)(EVENT_T)> _event_handlers;
 };
 

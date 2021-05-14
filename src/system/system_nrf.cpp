@@ -5,7 +5,7 @@
 #include <SPI.h>
 
 #include "accel/accel.h"
-#include "backlight/backlight.h"
+#include "gpio/gpio.h"
 #include "battery/battery.h"
 #include "pins.h"
 #include "system/system.h"
@@ -65,7 +65,6 @@ void double_tapped() {
 
 
 System::System() {
-  commonSetup();
   // set up core system
   Serial.begin(115200);
   sys = this;
@@ -95,11 +94,7 @@ System::System() {
   pinMode(PIN_LCD_DISP, OUTPUT);
   digitalWrite(PIN_LCD_DISP, HIGH);
 
-  _gfx = new Graphics();
-  _rtc = new RTC();
-  _battery = new Battery();
-  _accel = new Accelerometer();
-  _backlight = new Backlight();
+  commonSetup();
 
   // attachInterrupt(PIN_SQW, doSomething, CHANGE);
   // i2cterm_setup();
@@ -135,6 +130,6 @@ RTC *System::getRTC() { return _rtc; }
 
 Battery *System::getBattery() { return _battery; }
 
-Backlight *System::getBacklight() { return _backlight; }
+GPIO *System::getBacklight() { return _backlight; }
 
 #endif

@@ -1,14 +1,13 @@
-#ifndef _BACKLIGHT_H_
-#define _BACKLIGHT_H_
+#pragma once
 
 #ifdef EMBEDDED
 #include "FreeRTOS.h"
 #include <task.h>
 #endif
 
-class Backlight {
+class GPIO {
   public:
-    Backlight();
+    GPIO(int pin);
 
     void enableFor(unsigned ms);
     void off();
@@ -20,6 +19,5 @@ class Backlight {
 
     // duration is milliseconds cast to a void*
     static void backlightControlCallback(void* duration_ms);
+    int _pin;
 };
-
-#endif

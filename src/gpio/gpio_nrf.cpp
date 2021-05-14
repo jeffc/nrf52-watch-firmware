@@ -3,20 +3,21 @@
 #include <Arduino.h>
 #include "FreeRTOS.h"
 #include "task.h"
-#include "backlight.h"
+#include "gpio.h"
 #include "pins.h"
 
-Backlight::Backlight() {
+GPIO::GPIO(int pin) {
   handle = NULL;
+  _pin = pin;
 }
 
-void Backlight::enableFor(unsigned ms) {
+void GPIO::enableFor(unsigned ms) {
   if (handle != NULL) {
     vTaskDelete(handle);
     handle = NULL;
   }
   xTaskCreate(
-      Backlight::backlightControlCallback,
+      [](void* x) { GPIO::backlightControlCallback(x); },
       "backlight",
       256, /* stack size, words */
       (void*)(ms),
@@ -25,7 +26,7 @@ void Backlight::enableFor(unsigned ms) {
   );
 }
 
-void Backlight::backlightControlCallback(void* duration_ms) {
+void GPIO::backlightControlCallback(void* duration_ms) {
   unsigned ms = (unsigned)duration_ms;
   digitalWrite(PIN_BACKLIGHT, HIGH);
   delay(ms);

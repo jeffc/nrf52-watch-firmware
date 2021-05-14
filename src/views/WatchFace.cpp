@@ -1,8 +1,13 @@
-#include <system/system.h>
 #include "WatchFace.h"
+#include "Menu.h"
+
 #include <fonts/Dustfine72pt7b.h>
 #include <fonts/FreeMonoBold12pt7b.h>
-#include "views/PopupView.h"
+
+#include <string>
+#include <system/system.h>
+#include <utility>
+#include <vector>
 /*
 void drawTopBar(System* _sys) {
   Graphics *gfx = _sys->getGraphics();
@@ -66,8 +71,15 @@ void WatchFace::draw() {
   //drawTopBar(_sys);
 }
 
+// for testing
+static int lbl = 0;
+
 void WatchFace::handleEvent(EVENT_T e) {
+  //if (e.type == BUTTON_CHANGE && e.button == BUTTON_MIDDLE) {
   if (e.type == BUTTON_PRESS && e.button == BUTTON_BOTTOM) {
-    _sys->switchToNewView(new PopupView(_sys));
+    Menu* menu = new Menu(_sys);
+    menu->addItem([&]() { return "label " + std::to_string(lbl);}, []() { lbl++; return false; });
+    menu->addItem("label 2", []() { lbl = 0; return true; });
+    _sys->switchToNewView(menu);
   }
 }

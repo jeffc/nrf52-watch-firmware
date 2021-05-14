@@ -11,6 +11,13 @@ System* System::_INSTANCE = NULL;
 
 void System::commonSetup() {
   System::_INSTANCE = this;
+
+  _gfx = new Graphics();
+  _rtc = new RTC();
+  _battery = new Battery();
+  _accel = new Accelerometer();
+  _backlight = new GPIO(PIN_BACKLIGHT);
+
   _event_handlers = std::vector<void(*)(EVENT_T)>();
   initViews();
   setupButtonEvents();
@@ -61,19 +68,10 @@ void System::switchToNewView(View* v) {
 }
 
 void System::fireEvent(EVENT_T e) {
-#ifdef NATIVE
-  std::cout << "fired event" << std::endl;
-#endif
   for (auto f : _event_handlers) {
     f(e);
   }
-
-  std::vector<View*> views = std::vector<View*>(_view_stack->begin(), _view_stack->end());
-  std::reverse(views.begin(), views.end());
-
-  for (View* v : views) {
-    v->handleEvent(e);
-  }
+  getActiveView()->handleEvent(e);
 }
 
 void System::registerEventHandler(void (*handler)(EVENT_T)) {

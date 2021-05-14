@@ -2,7 +2,7 @@
 #include "pins.h"
 
 #include "battery/battery.h"
-#include "backlight/backlight.h"
+#include "gpio/gpio.h"
 #include "graphics/graphics.h"
 #include "rtc/rtc.h"
 #include "system/system.h"
@@ -52,7 +52,7 @@ void loop() {
 #ifdef EMBEDDED
   RTC *rtc = sys->getRTC();
   Battery *battery = sys->getBattery();
-  Backlight *backlight = sys->getBacklight();
+  GPIO *backlight = sys->getBacklight();
   // set time with bash command: echo "=$((`date +%s` - (4*3600)))" >
   // /dev/ttyACM0
   if (Serial.available()) {

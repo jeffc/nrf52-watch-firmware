@@ -17,9 +17,6 @@ std::map<std::pair<int,int>,callbackFunctionType> callbackMap;
 
 
 System::System() {
-  _gfx = new Graphics();
-  _rtc = new RTC();
-  _battery = new Battery();
   commonSetup();
 }
 

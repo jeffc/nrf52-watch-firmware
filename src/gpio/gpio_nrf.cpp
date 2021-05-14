@@ -1,5 +1,6 @@
 #ifdef EMBEDDED
 
+#include <string>
 #include <Arduino.h>
 #include "FreeRTOS.h"
 #include "task.h"
@@ -16,25 +17,24 @@ void GPIO::enableFor(unsigned ms) {
     vTaskDelete(handle);
     handle = NULL;
   }
+  _on_for = ms;
+  // use a lambda that takes `this` as a parameter, as a "poor man's capture"
   xTaskCreate(
-      [](void* x) { GPIO::backlightControlCallback(x); },
-      "backlight",
+      [](void* x) { GPIO* me = (GPIO*)x; me->on(); delay(me->_on_for); me->off(); vTaskSuspend(NULL); },
+      ("gpio_" + std::to_string(_pin)).c_str(),
       256, /* stack size, words */
-      (void*)(ms),
+      (void*)this,
       1,
       &(this->handle)
   );
 }
 
-void GPIO::backlightControlCallback(void* duration_ms) {
-  unsigned ms = (unsigned)duration_ms;
-  digitalWrite(PIN_BACKLIGHT, HIGH);
-  delay(ms);
-  digitalWrite(PIN_BACKLIGHT, LOW);
-  // suspend the task until it gets cleaned up
-  vTaskSuspend(NULL);
+void GPIO::on() {
+  digitalWrite(_pin, HIGH);
 }
 
-
+void GPIO::off() {
+  digitalWrite(_pin, LOW);
+}
 
 #endif

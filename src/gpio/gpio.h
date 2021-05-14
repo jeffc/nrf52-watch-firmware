@@ -10,14 +10,13 @@ class GPIO {
     GPIO(int pin);
 
     void enableFor(unsigned ms);
+    void on();
     void off();
 
   private:
 #ifdef EMBEDDED
     TaskHandle_t handle;
 #endif
-
-    // duration is milliseconds cast to a void*
-    static void backlightControlCallback(void* duration_ms);
     int _pin;
+    unsigned _on_for; // used for freertos callback
 };

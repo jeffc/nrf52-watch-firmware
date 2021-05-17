@@ -43,7 +43,9 @@ void BusFault_Handler() {
 }
 
 void double_tapped() {
-  sys->getBacklight()->enableFor(1500);
+  if (!sys->getBacklight()->isOn()) {
+    sys->getBacklight()->enableFor(1500);
+  }
 }
 
 
@@ -62,6 +64,9 @@ System::System() {
   NRF_WDT->CRV = 3932161; // Timeout set to 120 seconds, timeout[s] = (CRV-1)/32768
   NRF_WDT->RREN = 0x01;     // Enable the RR[0] reload register
   NRF_WDT->TASKS_START = 1; // Start WDT
+
+  // enable the DCDC converter
+  sd_power_dcdc_mode_set(NRF_POWER_DCDC_ENABLE);
 
   // set up GPIOs
 

@@ -45,6 +45,7 @@ void doit() {
   sys->feedWatchdog();
 }
 
+
 void loop() {
 #ifdef EMBEDDED
   // suspendLoop();
@@ -52,7 +53,7 @@ void loop() {
 #ifdef EMBEDDED
   RTC *rtc = sys->getRTC();
   Battery *battery = sys->getBattery();
-  GPIO *backlight = sys->getBacklight();
+  //GPIO *backlight = sys->getBacklight();
   // set time with bash command: echo "=$((`date +%s` - (4*3600)))" >
   // /dev/ttyACM0
   if (Serial.available()) {
@@ -93,10 +94,7 @@ void loop() {
       case 'v':
         Serial.println(__DATE__ " " __TIME__);
         break;
-      case 'x':
-        sys->fireEvent({BUTTON_PRESS, BUTTON_BOTTOM});
-        break;
-
+/*
       case '1':
         Serial.println("pressing TOP");
         sys->fireEvent({BUTTON_PRESS, BUTTON_TOP});
@@ -136,6 +134,7 @@ void loop() {
         Serial.println("Manually calling doit()");
         doit();
         break;
+*/
     }
   }
   delay(100);

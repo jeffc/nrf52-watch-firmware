@@ -9,27 +9,6 @@
 #include <system/system.h>
 #include <utility>
 #include <vector>
-/*
-void drawTopBar(System* _sys) {
-  Graphics *gfx = _sys->getGraphics();
-  Battery *battery = _sys->getBattery();
-
-  gfx->fillRect(0, 0, SCREEN_WIDTH, 10, 0);
-  gfx->setTextColor(1);
-  gfx->setCursor(4,8);
-  gfx->setFont(&Org_01);
-  gfx->printf("%d mV", (battery->get_voltage_mV()));
-
-  int16_t x1, y1;
-  uint16_t w, h;
-  char buf[32] = {'\0'};
-  snprintf(buf, sizeof(buf)-1, "%d%%", battery->get_percent());
-  gfx->getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
-  gfx->setCursor(SCREEN_WIDTH - w - 4, 8);
-  gfx->print(buf);
-}
-*/
-
 
 void WatchFace::draw() {
   Graphics *gfx = _sys->getGraphics();
@@ -87,6 +66,7 @@ void WatchFace::handleEvent(EVENT_T e) {
     menu->addItem([&]() { return std::string((_sys->getBacklight()->isOn()) ? "disable" : "enable") + " backlight";}, [&]() { _sys->getBacklight()->toggle(); return false; });
     menu->addItem([&]() { return std::string((_sys->get5Vreg()->isOn()) ? "disable" : "enable") + " 5v reg";}, [&]() { _sys->get5Vreg()->toggle(); return false; });
     menu->addItem([&]() { return std::string((_sys->getFlashlight()->isOn()) ? "disable" : "enable") + " flashlight";}, [&]() { _sys->getFlashlight()->toggle(); return false; });
+
     menu->addItem("", []() { return false; }); // spacer
     menu->addItem("Update Mode", [&]() { _sys->getFlashlight()->off(); enter_dfu(); return false; });
     menu->addItem("back", []() { return true; });

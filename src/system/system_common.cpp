@@ -5,6 +5,7 @@
 #include "pins.h"
 #include <iostream>
 #include <algorithm>
+#include "ble/ble.h"
 
 
 System* System::_INSTANCE = NULL;
@@ -20,9 +21,10 @@ void System::commonSetup() {
   _flashlight = new GPIO(PIN_FLASHLIGHT);
   _5Vreg = new GPIO(PIN_5VREG);
   _buzzer = new GPIO(PIN_BUZZER);
+  _ble = new BLE();
 
-  _event_handlers = std::vector<void(*)(EVENT_T)>();
   initViews();
+  _event_handlers = new std::vector<void(*)(EVENT_T)>();
   setupButtonEvents();
 }
 
@@ -71,14 +73,14 @@ void System::switchToNewView(View* v) {
 }
 
 void System::fireEvent(EVENT_T e) {
-  for (auto f : _event_handlers) {
+  for (auto f : *_event_handlers) {
     f(e);
   }
   getActiveView()->handleEvent(e);
 }
 
 void System::registerEventHandler(void (*handler)(EVENT_T)) {
-  _event_handlers.push_back(handler);
+  _event_handlers->push_back(handler);
 }
 
 // this should be mutex-protected, but std::mutex doesn't work on nrf52
@@ -97,4 +99,5 @@ GPIO *System::getBacklight() { return _backlight; }
 GPIO *System::getFlashlight() { return _flashlight; }
 GPIO *System::get5Vreg() { return _5Vreg; }
 GPIO *System::getBuzzer() { return _buzzer; }
+BLE  *System::getBLE() { return _ble; }
 

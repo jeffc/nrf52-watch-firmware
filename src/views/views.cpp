@@ -11,6 +11,9 @@ void View::draw() {
 void View::update() {
 }
 
+View::~View() {
+}
+
 void View::handleEvent(EVENT_T e) {
 }
 

@@ -36,6 +36,7 @@ struct EVENT_T {
 class View {
   public:
     View(System* s);
+    virtual ~View();
 
     virtual void draw();
     virtual void update();

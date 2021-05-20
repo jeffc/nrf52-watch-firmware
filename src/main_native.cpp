@@ -36,6 +36,7 @@ void handleKeyEvent(SDL_Keycode key, bool keydown) {
 
 uint32_t oneSecondCallbackFn(uint32_t interval, void *param) {
   sys->fireIRQ(PIN_SQW, RISING);
+  sys->getGraphics()->display();
   return 1000; // set the next timer for 1s from now
 }
 
@@ -48,9 +49,6 @@ int main() {
 
   while (running) {
     loop();
-    System::runlock.lock();
-    gfx->display();
-    System::runlock.unlock();
     SDL_Event event;
     if (SDL_PollEvent(&event) == 1) {
       switch (event.type) {

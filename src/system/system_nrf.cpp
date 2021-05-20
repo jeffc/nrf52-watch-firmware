@@ -15,7 +15,6 @@
 
 static System *sys = NULL;
 
-
 // Fault handlers
 // https://www.freertos.org/Debugging-Hard-Faults-On-Cortex-M-Microcontrollers.html
 
@@ -51,7 +50,7 @@ void double_tapped() {
 
 System::System() {
   // set up core system
-  Serial.begin(115200);
+  //Serial.begin(115200);
   sys = this;
 
   Wire.begin();
@@ -82,19 +81,16 @@ System::System() {
   pinMode(PIN_LCD_DISP, OUTPUT);
   digitalWrite(PIN_LCD_DISP, HIGH);
 
-  commonSetup();
-
   // attachInterrupt(PIN_SQW, doSomething, CHANGE);
   // i2cterm_setup();
   pinMode(PIN_BUTTON1, INPUT_PULLUP);
-  pinMode(PIN_BUTTON2, INPUT_PULLUP);
   pinMode(PIN_BUTTON3, INPUT_PULLUP);
-  pinMode(PIN_BUTTON4, INPUT_PULLUP);
   pinMode(PIN_BUTTON5, INPUT_PULLUP);
 
   pinMode(PIN_CHG, INPUT);
   pinMode(PIN_ACCELINT1, INPUT);
 
+  commonSetup();
   //attachInterrupt(PIN_BUTTON3, i2cscan, FALLING);
   //attachInterrupt(PIN_BUTTON5, backlight_pin5, CHANGE);
   registerIRQ(PIN_ACCELINT1, double_tapped, RISING);

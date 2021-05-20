@@ -4,6 +4,7 @@
 #include <battery/battery.h>
 #include <gpio/gpio.h>
 #include <graphics/graphics.h>
+#include <ble/ble.h>
 #include <accel/accel.h>
 #include <rtc/rtc.h>
 #include <set>
@@ -35,6 +36,7 @@ public:
   GPIO *getFlashlight();
   GPIO *get5Vreg();
   GPIO *getBuzzer();
+  BLE  *getBLE();
 
   View* getActiveView();
   void switchToNewView(View* v);
@@ -76,11 +78,12 @@ private:
   GPIO *_flashlight;
   GPIO *_5Vreg;
   GPIO *_buzzer;
+  BLE  *_ble;
 
   static System* _INSTANCE;
 
-  std::list<View*>* _view_stack;
-  std::vector<void (*)(EVENT_T)> _event_handlers;
+  std::list<View*>* _view_stack = NULL;
+  std::vector<void (*)(EVENT_T)>* _event_handlers = NULL;
 };
 
 /* There's a better way to do this, right? */

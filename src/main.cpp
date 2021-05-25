@@ -31,11 +31,12 @@ void enter_dfu_if_btns15(EVENT_T e) {
 }
 
 void setup() {
-  delay(1000);
   sys = new System();
 
   Graphics *gfx = sys->getGraphics();
   gfx->clearDisplay();
+
+  sys->registerIRQ(PIN_SQW, doit, RISING);
 
   //suspendLoop();
 }

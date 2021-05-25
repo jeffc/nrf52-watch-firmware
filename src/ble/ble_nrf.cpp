@@ -16,7 +16,7 @@ void BLE::startAdvertising() {
   Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_GENERIC_WATCH);
 
   // Include BLE HID service
-  Bluefruit.Advertising.addService(_hid);
+  //Bluefruit.Advertising.addService(_hid);
 
   // There is enough room for the dev name in the advertising packet
   Bluefruit.Advertising.addName();
@@ -48,7 +48,7 @@ void BLE::run() {
   Bluefruit.autoConnLed(false);
   Bluefruit.setName("BLETest");
 
-  _hid.begin();
+  //_hid.begin();
   // can't do this until the next release of framework-arduinoadafruitnrf52,
   // with the 0.22 release of the adafruit BSP
   //Bluefruit.Periph.setConnSlaveLatency(100);

@@ -3,8 +3,7 @@
 #include <iostream>
 #include "ble.h"
 
-BLE::BLE(System* sys) {
-  _sys = sys;
+BLE::BLE() {
 }
 
 void BLE::enable() {

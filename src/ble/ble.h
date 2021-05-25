@@ -2,7 +2,6 @@
 
 #ifdef EMBEDDED
 #include <bluefruit.h>
-#include "adafruit/BLEHidConsumer.h"
 #endif
 
 class BLE {
@@ -23,7 +22,6 @@ class BLE {
     bool _is_enabled = false;
 
 #ifdef EMBEDDED
-BLEHidConsumer _hid;
     void startAdvertising();
 #endif
 

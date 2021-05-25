@@ -37,12 +37,17 @@ void BLE::startAdvertising() {
 }
 
 void BLE::run() {
+  sd_softdevice_disable();
   Bluefruit.begin();
+  Bluefruit.Periph.setConnInterval(100, 200);
+	ble_gap_conn_params_t pp;
+  sd_ble_gap_ppcp_get(&pp);
+  pp.slave_latency = 200;
+  sd_ble_gap_ppcp_set(&pp);
   Bluefruit.setTxPower(4);
   Bluefruit.autoConnLed(false);
   Bluefruit.setName("BLETest");
 
-  Bluefruit.Periph.setConnInterval(16, 300);
   _hid.begin();
   // can't do this until the next release of framework-arduinoadafruitnrf52,
   // with the 0.22 release of the adafruit BSP
@@ -55,9 +60,9 @@ void BLE::test() {
 	for (uint16_t conn_hdl=0; conn_hdl < BLE_MAX_CONNECTION; conn_hdl++) {
 		BLEConnection* connection = Bluefruit.Connection(conn_hdl);
 		if ( connection ) {
-      _hid.consumerKeyPress(conn_hdl, HID_USAGE_CONSUMER_VOLUME_DECREMENT);
-			delay(10);
-      _hid.consumerKeyRelease(conn_hdl);
+      //_hid.consumerKeyPress(conn_hdl, HID_USAGE_CONSUMER_VOLUME_DECREMENT);
+			//delay(10);
+      //_hid.consumerKeyRelease(conn_hdl);
 
       Serial.print("interval: ");
       Serial.println(connection->getConnectionInterval());

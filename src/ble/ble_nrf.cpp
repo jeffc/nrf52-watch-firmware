@@ -33,6 +33,7 @@ void BLE::startAdvertising() {
   Bluefruit.Advertising.restartOnDisconnect(false);
   Bluefruit.Advertising.setInterval(32, 244);    // in unit of 0.625 ms
   Bluefruit.Advertising.setFastTimeout(5);      // number of seconds in fast mode
+  Bluefruit.Periph.setConnSlaveLatency(100);
   Bluefruit.Advertising.start(30);                // 0 = Don't stop advertising after n seconds  
 }
 
@@ -48,10 +49,6 @@ void BLE::run() {
   Bluefruit.autoConnLed(false);
   Bluefruit.setName("BLETest");
 
-  //_hid.begin();
-  // can't do this until the next release of framework-arduinoadafruitnrf52,
-  // with the 0.22 release of the adafruit BSP
-  //Bluefruit.Periph.setConnSlaveLatency(100);
 
   startAdvertising();
 }
@@ -64,6 +61,7 @@ void BLE::test() {
 			//delay(10);
       //_hid.consumerKeyRelease(conn_hdl);
 
+
       Serial.print("interval: ");
       Serial.println(connection->getConnectionInterval());
       
@@ -71,6 +69,16 @@ void BLE::test() {
       uint32_t status = sd_ble_gap_ppcp_get(&pp);
       Serial.printf("Status = %d\n\r", status);
       Serial.printf("\t%d\r\n\t%d\r\n\t%d\r\n\t%d\r\n", pp.min_conn_interval, pp.max_conn_interval, pp.slave_latency, pp.conn_sup_timeout);
+
+      //connection->requestConnectionParameter(connection->getConnectionInterval(), 100, pp.conn_sup_timeout);
+      ble_gap_conn_params_t params = {
+        .min_conn_interval = pp.min_conn_interval,
+        .max_conn_interval = pp.max_conn_interval,
+        .slave_latency = 10,
+        .conn_sup_timeout = 800
+      };
+      Serial.printf("BLE Syscall result: %d\n",
+          sd_ble_gap_conn_param_update(conn_hdl, &params));
 		}
 	}
 }

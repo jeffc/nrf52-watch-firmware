@@ -36,8 +36,33 @@ void WatchFace::draw() {
   gfx->printf("%02d", now.second);
 
   gfx->setFont(&FreeMonoBold12pt7b);
-  gfx->setCursor(30, 250);
-  gfx->printf("%04d-%02d-%02d", now.year, now.month, now.day);
+  gfx->setCursor(15, 250);
+  const char* dow = "???";
+  switch (now.dayOfWeek) {
+    case 0:
+      dow = "SUN";
+      break;
+    case 1:
+      dow = "MON";
+      break;
+    case 2:
+      dow = "TUE";
+      break;
+    case 3:
+      dow = "WED";
+      break;
+    case 4:
+      dow = "THU";
+      break;
+    case 5:
+      dow = "FRI";
+      break;
+    case 6:
+      dow = "SAT";
+      break;
+  }
+
+  gfx->printf("%s %04d-%02d-%02d", dow, now.year, now.month, now.day);
 
   gfx->setCursor(15, 270);
   gfx->print("batt: ");
@@ -66,6 +91,13 @@ void WatchFace::handleEvent(EVENT_T e) {
     menu->addItem([&]() { return std::string((_sys->getBacklight()->isOn()) ? "disable" : "enable") + " backlight";}, [&]() { _sys->getBacklight()->toggle(); return false; });
     menu->addItem([&]() { return std::string((_sys->get5Vreg()->isOn()) ? "disable" : "enable") + " 5v reg";}, [&]() { _sys->get5Vreg()->toggle(); return false; });
     menu->addItem([&]() { return std::string((_sys->getFlashlight()->isOn()) ? "disable" : "enable") + " flashlight";}, [&]() { _sys->getFlashlight()->toggle(); return false; });
+    menu->addItem([&]() { return std::string((_sys->isSerialEnabled()) ? "disable" : "enable") + " serial";}, [&]() { 
+        if (_sys->isSerialEnabled()) {
+          _sys->disableSerial();
+        } else {
+          _sys->enableSerial();
+        }
+        return false;});
 
     menu->addItem("", []() { return false; }); // spacer
     menu->addItem("Update Mode", [&]() { _sys->getFlashlight()->off(); enter_dfu(); return false; });

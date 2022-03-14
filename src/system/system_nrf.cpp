@@ -105,6 +105,22 @@ bool System::getButtonPressed(int pin) {
   return (digitalRead(pin) != HIGH);
 }
 
+void System::enableSerial() {
+  if (this->serialEnabled) {
+    return;
+  }
+  this->serialEnabled = true;
+  Serial.begin(115200);
+}
+
+void System::disableSerial() {
+  if (!this->serialEnabled) {
+    return;
+  }
+  this->serialEnabled = false;
+  Serial.end();
+}
+
 void System::feedWatchdog() { NRF_WDT->RR[0] = WDT_RR_RR_Reload; }
 
 #endif

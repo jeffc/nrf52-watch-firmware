@@ -48,7 +48,7 @@ void doit() {
 
 
 void loop() {
-  //sys->feedWatchdog();
+  sys->feedWatchdog();
 #ifdef EMBEDDED
   // suspendLoop();
 #endif
@@ -60,43 +60,44 @@ void loop() {
   // /dev/ttyACM0
   if (Serial && Serial.available()) {
     switch ((char)Serial.read()) {
-      case 'p': {
+      case 'p':
         Serial.println("pong");
         Serial.flush();
         break;
-      }
       case '=': {
         int unixt = Serial.parseInt();
         rtc->set_unixt(unixt);
         Serial.println("set time");
+        }
         break;
-      }
-      case 'b': {
+      case 'b': 
         Serial.println("setting battery model");
         battery->set_model();
         Serial.println("set battery model");
         break;
-      }
-      case 'i': {
+      case 'i': 
         i2cscan();
         break;
-      }
-      case 'l': {
+      case 'l':
         Serial.println("starting ble");
         sys->getBLE()->run();
         break;
-      }
-      case 'k': {
+      case ';':
+        sys->getBLE()->test();
+        break;
+      case 'k':
         Serial.println("boop");
         sys->getBLE()->test();
         break;
-                }
-      case 'u': {
+      case 'u':
         Serial.println("entering DFU");
         Serial.flush();
         enter_dfu();
         break;
-      }
+      case 'z': 
+        Serial.println("toggling buzzer");
+        sys->getBuzzer()->toggle();
+        break;
       case 'v':
         Serial.println(__DATE__ " " __TIME__);
         break;

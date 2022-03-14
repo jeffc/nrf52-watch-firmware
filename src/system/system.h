@@ -50,6 +50,10 @@ public:
 
   void refreshDisplay();
 
+  bool isSerialEnabled() { return serialEnabled; };
+  void enableSerial();
+  void disableSerial();
+
 #ifdef NATIVE
   // this happens in hardware on the nrf52
   void fireIRQ(int pin, int mode);
@@ -81,6 +85,8 @@ private:
   BLE  *_ble;
 
   static System* _INSTANCE;
+
+  bool serialEnabled = true;
 
   std::list<View*>* _view_stack = NULL;
   std::vector<void (*)(EVENT_T)>* _event_handlers = NULL;

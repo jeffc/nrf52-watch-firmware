@@ -123,4 +123,9 @@ void System::disableSerial() {
 
 void System::feedWatchdog() { NRF_WDT->RR[0] = WDT_RR_RR_Reload; }
 
+void System::reboot() {
+  digitalWrite(PIN_FLASHLIGHT, LOW);
+  NVIC_SystemReset();
+}
+
 #endif

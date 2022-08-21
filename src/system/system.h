@@ -54,6 +54,8 @@ public:
   void enableSerial();
   void disableSerial();
 
+  void reboot();
+
 #ifdef NATIVE
   // this happens in hardware on the nrf52
   void fireIRQ(int pin, int mode);

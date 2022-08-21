@@ -46,4 +46,17 @@ bool System::getButtonPressed(int pin) {
   return (System::buttonsPressed.count(pin) > 0);
 }
 
+void System::enableSerial() {
+  printf("Enabled Serial");
+}
+
+void System::disableSerial() {
+  printf("Disabled Serial");
+}
+
+void System::reboot() {
+  printf("Rebooting");
+  exit(0);
+}
+
 #endif

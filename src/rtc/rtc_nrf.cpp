@@ -36,6 +36,8 @@ bool isDST(int month, int day, int dow) {
 
 RTCDateTime RTC::now() {
   DateTime now = _rtc->now();
+  now = now + TimeSpan(get_tz_offset() * 3600);
+
   RTCDateTime out = {.year = now.year(),
                      .month = now.month(),
                      .day = now.day(),

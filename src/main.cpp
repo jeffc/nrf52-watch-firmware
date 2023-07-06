@@ -55,20 +55,19 @@ void loop() {
 #ifdef EMBEDDED
   RTC *rtc = sys->getRTC();
   Battery *battery = sys->getBattery();
+  int unixt = 0;
   //GPIO *backlight = sys->getBacklight();
-  // set time with bash command: echo "=$((`date +%s` - (4*3600)))" >
-  // /dev/ttyACM0
+  // set time with bash command: echo "=$((`date +%s` ))" > /dev/ttyACM0
   if (Serial && Serial.available()) {
     switch ((char)Serial.read()) {
       case 'p':
         Serial.println("pong");
         Serial.flush();
         break;
-      case '=': {
-        int unixt = Serial.parseInt();
+      case '=': 
+        unixt = Serial.parseInt();
         rtc->set_unixt(unixt);
         Serial.println("set time");
-        }
         break;
       case 'b': 
         Serial.println("setting battery model");
@@ -105,6 +104,10 @@ void loop() {
         Serial.println("Manually calling doit()");
         doit();
         break;
+    }
+    Serial.flush();
+    while (Serial.available() > 0) {
+      Serial.read();
     }
   }
   delay(100);

@@ -47,4 +47,8 @@ void enter_dfu() {
   NVIC_SystemReset();
 }
 
+void enter_ble_dfu() {
+  enterOTADfu();
+}
+
 #endif

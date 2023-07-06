@@ -21,6 +21,11 @@ public:
   RTC();
   void set_unixt(int ut);
   RTCDateTime now();
+
+  // get/set timezone offset from UTC (in hours)
+  void set_tz_offset(int offset);
+  int get_tz_offset();
+
 };
 
 #endif

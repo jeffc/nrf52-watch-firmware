@@ -86,6 +86,15 @@ void WatchFace::handleEvent(EVENT_T e) {
     }
   }
 
+  if (e.type == BUTTON_PRESS && e.button == BUTTON_TOP) {
+    Menu* menu = new Menu(_sys);
+    RTC* rtc = _sys->getRTC();
+    menu->addItem([&]() { return "TZ offset is " + std::to_string(rtc->get_tz_offset());}, [&]() { return false; });
+    menu->addItem("+1", [&]() { rtc->set_tz_offset(rtc->get_tz_offset() + 1); return false; });
+    menu->addItem("-1", [&]() { rtc->set_tz_offset(rtc->get_tz_offset() - 1); return false; });
+    menu->addItem("back", []() { return true; });
+    _sys->switchToNewView(menu);
+  }
   if (e.type == BUTTON_PRESS && e.button == BUTTON_BOTTOM) {
     Menu* menu = new Menu(_sys);
     menu->addItem([&]() { return std::string((_sys->getBacklight()->isOn()) ? "disable" : "enable") + " backlight";}, [&]() { _sys->getBacklight()->toggle(); return false; });
@@ -101,6 +110,11 @@ void WatchFace::handleEvent(EVENT_T e) {
 
     menu->addItem("", []() { return false; }); // spacer
     menu->addItem("Update Mode", [&]() { _sys->getFlashlight()->off(); enter_dfu(); return false; });
+    menu->addItem("BLE Update", [&]() { _sys->getFlashlight()->off(); enter_ble_dfu(); return false; });
+    menu->addItem("Reboot", [&]() { _sys->reboot(); return false; });
+    menu->addItem("", []() { return false; }); // spacer
+    menu->addItem("Built " __DATE__ " @ " __TIME__, []() { return false; });
+    menu->addItem("", []() { return false; }); // spacer
     menu->addItem("back", []() { return true; });
     _sys->switchToNewView(menu);
   }

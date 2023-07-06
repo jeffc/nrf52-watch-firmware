@@ -13,4 +13,10 @@ void i2cscan();
  */
 void enter_dfu();
 
+/**
+ * Enter Bluetooth Device Firmware Update mode.
+ * Does not return.
+ */
+void enter_ble_dfu();
+
 #endif

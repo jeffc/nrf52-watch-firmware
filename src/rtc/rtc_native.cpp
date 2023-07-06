@@ -8,7 +8,10 @@ RTC::RTC() { printf("rtc_init() called\n"); }
 
 RTCDateTime RTC::now() {
   std::time_t t = std::time(0);
-  std::tm *now = std::localtime(&t);
+
+  t = (time_t)(t + (get_tz_offset() * 3600));
+
+  std::tm *now = std::gmtime(&t);
   return RTCDateTime{.year = (uint16_t)now->tm_year +
                              1900 /* to match the physical RTC interface */,
                      .month =

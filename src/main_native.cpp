@@ -21,6 +21,11 @@ std::map<SDL_Keycode, int> keys_map = {
 void handleKeyEvent(SDL_Keycode key, bool keydown) {
   auto it = keys_map.find(key);
 
+  if (key == SDLK_t) {
+    printf("boop\n");
+    sys->refreshDisplay();
+    sys->getGraphics()->display();
+  }
 
   if (it != keys_map.end()) {
     if (keydown) {
@@ -30,13 +35,15 @@ void handleKeyEvent(SDL_Keycode key, bool keydown) {
     }
     sys->fireIRQ(it->second, (keydown) ? FALLING : RISING);
     sys->fireIRQ(it->second, CHANGE);
+
   }
 }
 
 
 uint32_t oneSecondCallbackFn(uint32_t interval, void *param) {
   sys->fireIRQ(PIN_SQW, RISING);
-  sys->getGraphics()->display();
+  //sys->getGraphics()->display();
+  //sys->refreshDisplay();
   return 1000; // set the next timer for 1s from now
 }
 

@@ -47,7 +47,6 @@ void double_tapped() {
   }
 }
 
-
 System::System() {
   // set up core system
   //Serial.begin(115200);
